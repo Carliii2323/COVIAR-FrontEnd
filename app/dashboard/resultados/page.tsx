@@ -1048,7 +1048,7 @@ export default function ResultadosPage() {
                     </div>
                 </div>
 
-                {/* Títulos */}
+                {/* Títuloss */}
                 <div className="space-y-2 pt-2">
                     <h1 className="text-3xl font-bold text-foreground">
                         Resultado de la última Autoevaluación completada
