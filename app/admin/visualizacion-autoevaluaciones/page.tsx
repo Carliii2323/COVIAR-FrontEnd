@@ -12,7 +12,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { getEvaluaciones, type EvaluacionListItem } from "@/lib/api/admin"
 import { obtenerResultadosAutoevaluacion } from "@/lib/api/autoevaluacion"
 import { exportResultadoDetalladoToPDF } from "@/lib/utils/export-utils"
-import { AlertCircle, Search, FileText, Filter, Download, ChevronLeft, ChevronRight, Loader2 } from "lucide-react"
+import { AlertCircle, Search, FileText, Filter, Download, ChevronLeft, ChevronRight, Loader2, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react"
 
 export default function GestionAutoevaluacionPage() {
   const [evaluaciones, setEvaluaciones] = useState<EvaluacionListItem[]>([])
@@ -30,6 +30,12 @@ export default function GestionAutoevaluacionPage() {
 
   // PDF download
   const [downloadingId, setDownloadingId] = useState<number | null>(null)
+
+  // Ordenamiento
+  type SortKey = "id_autoevaluacion" | "nombre_bodega" | "fecha_inicio" | "fecha_fin"
+  type SortDir = "asc" | "desc"
+  const [sortKey, setSortKey] = useState<SortKey>("id_autoevaluacion")
+  const [sortDir, setSortDir] = useState<SortDir>("asc")
 
   useEffect(() => {
     fetchEvaluaciones()
@@ -132,11 +138,46 @@ export default function GestionAutoevaluacionPage() {
     link.click()
   }
 
+  const handleSort = (key: SortKey) => {
+    if (sortKey === key) {
+      setSortDir(sortDir === "asc" ? "desc" : "asc")
+    } else {
+      setSortKey(key)
+      setSortDir("asc")
+    }
+    setCurrentPage(1)
+  }
+
+  const SortIcon = ({ col }: { col: SortKey }) => {
+    if (sortKey !== col) return <ArrowUpDown className="inline h-3 w-3 ml-1 text-muted-foreground/50" />
+    return sortDir === "asc"
+      ? <ArrowUp className="inline h-3 w-3 ml-1 text-foreground" />
+      : <ArrowDown className="inline h-3 w-3 ml-1 text-foreground" />
+  }
+
+  const sortedEvaluaciones = [...filteredEvaluaciones].sort((a, b) => {
+    let aVal: string | number
+    let bVal: string | number
+    if (sortKey === "id_autoevaluacion") {
+      aVal = a.id_autoevaluacion
+      bVal = b.id_autoevaluacion
+    } else if (sortKey === "fecha_inicio" || sortKey === "fecha_fin") {
+      aVal = a[sortKey] ? new Date(a[sortKey]!).getTime() : 0
+      bVal = b[sortKey] ? new Date(b[sortKey]!).getTime() : 0
+    } else {
+      aVal = (a[sortKey] as string).toLowerCase()
+      bVal = (b[sortKey] as string).toLowerCase()
+    }
+    if (aVal < bVal) return sortDir === "asc" ? -1 : 1
+    if (aVal > bVal) return sortDir === "asc" ? 1 : -1
+    return 0
+  })
+
   // Calcular paginación
-  const totalPages = Math.ceil(filteredEvaluaciones.length / itemsPerPage)
+  const totalPages = Math.ceil(sortedEvaluaciones.length / itemsPerPage)
   const startIndex = (currentPage - 1) * itemsPerPage
   const endIndex = startIndex + itemsPerPage
-  const currentEvaluaciones = filteredEvaluaciones.slice(startIndex, endIndex)
+  const currentEvaluaciones = sortedEvaluaciones.slice(startIndex, endIndex)
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page)
@@ -226,7 +267,7 @@ export default function GestionAutoevaluacionPage() {
           <div className="mt-4 flex items-center gap-2 text-sm text-muted-foreground">
             <FileText className="h-4 w-4" />
             <span>
-              Mostrando {startIndex + 1}-{Math.min(endIndex, filteredEvaluaciones.length)} de {filteredEvaluaciones.length} evaluaciones
+              Mostrando {filteredEvaluaciones.length === 0 ? 0 : startIndex + 1}-{Math.min(endIndex, filteredEvaluaciones.length)} de {filteredEvaluaciones.length} evaluaciones
             </span>
           </div>
         </CardContent>
@@ -255,12 +296,32 @@ export default function GestionAutoevaluacionPage() {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>ID</TableHead>
-                      <TableHead>Bodega</TableHead>
+                      <TableHead
+                        className="cursor-pointer select-none hover:bg-muted/50"
+                        onClick={() => handleSort("id_autoevaluacion")}
+                      >
+                        ID <SortIcon col="id_autoevaluacion" />
+                      </TableHead>
+                      <TableHead
+                        className="cursor-pointer select-none hover:bg-muted/50"
+                        onClick={() => handleSort("nombre_bodega")}
+                      >
+                        Bodega <SortIcon col="nombre_bodega" />
+                      </TableHead>
                       <TableHead>Razón Social</TableHead>
                       <TableHead>Estado</TableHead>
-                      <TableHead>Fecha Inicio</TableHead>
-                      <TableHead>Fecha Fin</TableHead>
+                      <TableHead
+                        className="cursor-pointer select-none hover:bg-muted/50"
+                        onClick={() => handleSort("fecha_inicio")}
+                      >
+                        Fecha Inicio <SortIcon col="fecha_inicio" />
+                      </TableHead>
+                      <TableHead
+                        className="cursor-pointer select-none hover:bg-muted/50"
+                        onClick={() => handleSort("fecha_fin")}
+                      >
+                        Fecha Fin <SortIcon col="fecha_fin" />
+                      </TableHead>
                       <TableHead>Responsable</TableHead>
                       <TableHead className="text-right">Acciones</TableHead>
                     </TableRow>

@@ -16,7 +16,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
-import { AlertCircle, Search, Building2, Filter, ChevronLeft, ChevronRight, Loader2, KeyRound, Eye, EyeOff, Info } from "lucide-react"
+import { AlertCircle, Search, Building2, Filter, ChevronLeft, ChevronRight, Loader2, KeyRound, Eye, EyeOff, Info, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react"
 
 interface Bodega {
   id_bodega: number
@@ -59,6 +59,12 @@ export default function GestionBodegasPage() {
   const [passwordError, setPasswordError] = useState<string | null>(null)
   const [cambiandoPassword, setCambiandoPassword] = useState(false)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
+
+  // Ordenamiento
+  type SortKey = "id_bodega" | "nombre_fantasia" | "fecha_registro" | "fecha_ultima_evaluacion"
+  type SortDir = "asc" | "desc"
+  const [sortKey, setSortKey] = useState<SortKey>("id_bodega")
+  const [sortDir, setSortDir] = useState<SortDir>("asc")
 
   // Dialog de más información
   const [dialogInfoOpen, setDialogInfoOpen] = useState(false)
@@ -177,10 +183,45 @@ export default function GestionBodegasPage() {
   setDialogInfoOpen(true)
   }
 
-  const totalPages = Math.ceil(filteredBodegas.length / itemsPerPage)
+  const handleSort = (key: SortKey) => {
+    if (sortKey === key) {
+      setSortDir(sortDir === "asc" ? "desc" : "asc")
+    } else {
+      setSortKey(key)
+      setSortDir("asc")
+    }
+    setCurrentPage(1)
+  }
+
+  const SortIcon = ({ col }: { col: SortKey }) => {
+    if (sortKey !== col) return <ArrowUpDown className="inline h-3 w-3 ml-1 text-muted-foreground/50" />
+    return sortDir === "asc"
+      ? <ArrowUp className="inline h-3 w-3 ml-1 text-foreground" />
+      : <ArrowDown className="inline h-3 w-3 ml-1 text-foreground" />
+  }
+
+  const sortedBodegas = [...filteredBodegas].sort((a, b) => {
+    let aVal: string | number = a[sortKey] ?? ""
+    let bVal: string | number = b[sortKey] ?? ""
+    if (sortKey === "id_bodega") {
+      aVal = a.id_bodega
+      bVal = b.id_bodega
+    } else if (sortKey === "fecha_registro" || sortKey === "fecha_ultima_evaluacion") {
+      aVal = aVal ? new Date(aVal as string).getTime() : 0
+      bVal = bVal ? new Date(bVal as string).getTime() : 0
+    } else {
+      aVal = (aVal as string).toLowerCase()
+      bVal = (bVal as string).toLowerCase()
+    }
+    if (aVal < bVal) return sortDir === "asc" ? -1 : 1
+    if (aVal > bVal) return sortDir === "asc" ? 1 : -1
+    return 0
+  })
+
+  const totalPages = Math.ceil(sortedBodegas.length / itemsPerPage)
   const startIndex = (currentPage - 1) * itemsPerPage
   const endIndex = startIndex + itemsPerPage
-  const currentBodegas = filteredBodegas.slice(startIndex, endIndex)
+  const currentBodegas = sortedBodegas.slice(startIndex, endIndex)
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page)
@@ -252,6 +293,9 @@ export default function GestionBodegasPage() {
             <Building2 className="h-4 w-4" />
             <span>
               Mostrando {filteredBodegas.length === 0 ? 0 : startIndex + 1}-{Math.min(endIndex, filteredBodegas.length)} de {filteredBodegas.length} bodegas
+            {sortKey !== "id_bodega" && (
+              <span className="ml-2 text-xs text-muted-foreground/70">(ordenado por {sortKey === "nombre_fantasia" ? "nombre" : sortKey === "fecha_registro" ? "fecha registro" : "fecha evaluación"} {sortDir === "asc" ? "↑" : "↓"})</span>
+            )}
             </span>
           </div>
         </CardContent>
@@ -280,12 +324,28 @@ export default function GestionBodegasPage() {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead className="text-center">ID</TableHead>
-                      <TableHead className="text-center">Nombre Fantasía</TableHead>
+                      <TableHead
+                        className="text-center cursor-pointer select-none hover:bg-muted/50"
+                        onClick={() => handleSort("id_bodega")}
+                      >
+                        ID <SortIcon col="id_bodega" />
+                      </TableHead>
+                      <TableHead
+                        className="text-center cursor-pointer select-none hover:bg-muted/50"
+                        onClick={() => handleSort("nombre_fantasia")}
+                      >
+                        Nombre Fantasía <SortIcon col="nombre_fantasia" />
+                      </TableHead>
                       <TableHead className="text-center">CUIT</TableHead>
                       <TableHead className="text-center">Teléfono</TableHead>
                       <TableHead className="text-center">Nivel de Sostenibilidad</TableHead>
                       <TableHead className="text-center">Segmentación</TableHead>
+                      <TableHead
+                        className="text-center cursor-pointer select-none hover:bg-muted/50"
+                        onClick={() => handleSort("fecha_registro")}
+                      >
+                        Fecha Reg. <SortIcon col="fecha_registro" />
+                      </TableHead>
                       <TableHead className="text-center">Acciones</TableHead>
                       <TableHead className="text-center">Mas información</TableHead>
                     </TableRow>
@@ -307,6 +367,7 @@ export default function GestionBodegasPage() {
                             <span className="text-muted-foreground italic">Sin evaluación</span>
                           )}
                         </TableCell>
+                        <TableCell className="text-center py-2 px-2">{formatDate(bodega.fecha_registro)}</TableCell>
                         <TableCell className="text-center py-2 px-2">
                           <Button
                             variant="outline"
@@ -529,10 +590,6 @@ export default function GestionBodegasPage() {
                 <div>
                   <p className="text-muted-foreground font-medium">Email de Cuenta</p>
                   <p className="break-all">{bodegaInfo.email_cuenta || "-"}</p>
-                </div>
-                <div>
-                  <p className="text-muted-foreground font-medium">Fecha de Registro</p>
-                  <p>{formatDate(bodegaInfo.fecha_registro)}</p>
                 </div>
                 <div>
                   <p className="text-muted-foreground font-medium">Fecha Última Evaluación</p>
