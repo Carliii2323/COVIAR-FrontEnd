@@ -116,7 +116,7 @@ export function exportResultadoDetalladoToCSV(
         ['Capitulo', 'Indicador', 'Descripcion', 'Respuesta', 'Puntos', 'Max', 'Evidencia'],
     ]
 
-    const baseUrl = 'http://localhost:3000'
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : ''
     for (const cap of capitulos) {
         if (cap.indicadores) {
             for (const ind of cap.indicadores) {
@@ -426,7 +426,7 @@ export function exportResultadoDetalladoToPDF(
     // Mapa de fila -> URL de descarga de evidencia
     const evidenceLinks = new Map<number, string>()
     let tableRowIdx = 0
-    const baseUrl = 'http://localhost:3000'
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : ''
 
     for (const cap of capitulos) {
         const indicadores = cap.indicadores ?? []
