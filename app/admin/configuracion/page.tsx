@@ -6,7 +6,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Loader2, Key } from "lucide-react"
+import { Loader2, Key, Monitor } from "lucide-react"
+import { FONT_SIZE_KEY } from "@/components/font-size-initializer"
 
 interface Responsable {
   id_responsable: number
@@ -45,6 +46,36 @@ export default function ConfiguracionPage() {
   const [originalData, setOriginalData] = useState<FormData | null>(null)
 
   const [isSendingPasswordReset, setIsSendingPasswordReset] = useState(false)
+
+  // Visualización - tamaño de letra
+  const FONT_SIZES = [
+    { label: "Compacto", value: "13px" },
+    { label: "Pequeño",  value: "14px" },
+    { label: "Normal",   value: "16px" },
+    { label: "Grande",   value: "18px" },
+    { label: "Muy Grande", value: "20px" },
+  ]
+  const [fontSize, setFontSize] = useState("16px")
+
+  useEffect(() => {
+    const saved = localStorage.getItem(FONT_SIZE_KEY)
+    if (saved) setFontSize(saved)
+  }, [])
+
+  const applyFontSize = (size: string) => {
+    setFontSize(size)
+    document.documentElement.style.fontSize = size
+    localStorage.setItem(FONT_SIZE_KEY, size)
+  }
+
+  const detectAutoSize = () => {
+    const logical = window.screen.width / (window.devicePixelRatio || 1)
+    let recommended = "16px"
+    if (logical >= 2560)      recommended = "18px"
+    else if (logical >= 1920) recommended = "16px"
+    else if (logical < 1280)  recommended = "14px"
+    applyFontSize(recommended)
+  }
 
   const [formData, setFormData] = useState<FormData>({
     admin_first_name: "",
@@ -301,6 +332,49 @@ export default function ConfiguracionPage() {
               <p className="font-medium mt-2">{formData.admin_role || "-"}</p>
             )}
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Card de Visualización */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>Visualización</CardTitle>
+              <CardDescription>Ajusta el tamaño del texto según tu pantalla y preferencias</CardDescription>
+            </div>
+            <Button variant="outline" size="sm" onClick={detectAutoSize} className="shrink-0 gap-2">
+              <Monitor className="h-4 w-4" />
+              Detectar automáticamente
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex flex-wrap gap-2">
+            {FONT_SIZES.map((opt) => (
+              <button
+                key={opt.value}
+                onClick={() => applyFontSize(opt.value)}
+                className={`flex-1 min-w-[90px] flex flex-col items-center gap-1 px-3 py-3 rounded-lg border-2 transition-all ${
+                  fontSize === opt.value
+                    ? "border-[#880D1E] bg-[#880D1E]/5 text-[#880D1E]"
+                    : "border-border hover:border-muted-foreground/50 text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <span
+                  className="font-semibold leading-none"
+                  style={{ fontSize: opt.value }}
+                >
+                  A
+                </span>
+                <span className="text-xs font-medium">{opt.label}</span>
+              </button>
+            ))}
+          </div>
+          <p className="text-xs text-muted-foreground">
+            El tamaño seleccionado se guarda automáticamente y se aplica en toda la plataforma.
+            Usá <strong>Detectar automáticamente</strong> para un valor recomendado según tu resolución de pantalla.
+          </p>
         </CardContent>
       </Card>
 
