@@ -466,7 +466,7 @@ export function EvidenciaUpload({
                                 <FileText className="h-4 w-4 text-muted-foreground flex-shrink-0" />
                                 <div className="flex-1 min-w-0">
                                     <p className="text-sm font-medium truncate" title={pendingFile.name}>
-                                        {pendingFile.name}
+                                        {truncateFileName(pendingFile.name)}
                                     </p>
                                     <p className="text-xs text-muted-foreground">
                                         {(pendingFile.size / 1024).toFixed(1)} KB

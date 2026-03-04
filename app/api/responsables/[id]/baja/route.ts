@@ -32,7 +32,7 @@ export async function POST(
 
         if (!response.ok) {
             return NextResponse.json(
-                { message: data.message || `Error ${response.status}` },
+                { message: data.message || data.error || `Error ${response.status}` },
                 { status: response.status }
             )
         }
