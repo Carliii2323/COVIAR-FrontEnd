@@ -385,9 +385,9 @@ export default function AutoevaluacionPage() {
     }
   }
 
-  // Manejar cancelar autoevaluación pendiente y crear nueva
+  // Manejar cancelar autoevaluación pendiente (solo cancela, no crea nueva)
   const handleCancelPending = async () => {
-    if (!pendingInfo || !idBodega) return
+    if (!pendingInfo) return
 
     const autoId = String(pendingInfo.id)
     console.log('Cancelando autoevaluación:', autoId)
@@ -396,18 +396,35 @@ export default function AutoevaluacionPage() {
     setIsLoading(true)
 
     try {
-      // Llamar al endpoint para cancelar la autoevaluación pendiente
       await cancelarAutoevaluacion(autoId)
     } catch (error) {
       console.error('Error al cancelar autoevaluación:', error)
-      // Continuar aunque falle el cancelar
     }
 
-    // Limpiar info pendiente y recargar página para crear nueva
+    // Redirigir al dashboard; si el usuario quiere iniciar una nueva
+    // autoevaluación puede volver a esta página
+    router.push('/dashboard')
+  }
+
+  // Manejar cancelar autoevaluación pendiente y crear una nueva inmediatamente
+  const handleCancelAndCreateNew = async () => {
+    if (!pendingInfo || !idBodega) return
+
+    const autoId = String(pendingInfo.id)
+    console.log('Cancelando y creando nueva autoevaluación:', autoId)
+
+    setShowPendingDialog(false)
+    setIsLoading(true)
+
+    try {
+      await cancelarAutoevaluacion(autoId)
+    } catch (error) {
+      console.error('Error al cancelar autoevaluación:', error)
+    }
+
     setPendingInfo(null)
     setSavedResponses([])
 
-    // Crear nueva autoevaluación
     try {
       const result = await crearAutoevaluacion(idBodega)
       const { data } = result
@@ -1198,23 +1215,32 @@ export default function AutoevaluacionPage() {
           </div>
 
           {/* Footer con botones */}
-          <div className="px-6 py-4 bg-gray-50 border-t flex flex-col sm:flex-row gap-3 justify-center">
+          <div className="px-6 py-4 bg-gray-50 border-t flex flex-col gap-2">
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Button
+                variant="outline"
+                onClick={handleCancelAndCreateNew}
+                className="order-2 sm:order-1 border-gray-300 bg-white hover:bg-gray-100 text-gray-700 hover:text-gray-900"
+              >
+                {pendingInfo?.cantidadRespuestas && pendingInfo.cantidadRespuestas > 0
+                  ? "Cancelar y Empezar de Nuevo"
+                  : "Empezar de Nuevo"}
+              </Button>
+              <Button
+                onClick={handleContinuePending}
+                className="order-1 sm:order-2 bg-coviar-borravino hover:bg-coviar-borravino-dark text-white font-medium"
+              >
+                {!pendingInfo?.tieneSegmento
+                  ? "Seleccionar Segmento"
+                  : "Continuar Autoevaluación"}
+              </Button>
+            </div>
             <Button
-              variant="outline"
+              variant="ghost"
               onClick={handleCancelPending}
-              className="order-2 sm:order-1 border-gray-300 bg-white hover:bg-gray-100 text-gray-700 hover:text-gray-900"
+              className="text-sm text-muted-foreground hover:text-destructive"
             >
-              {pendingInfo?.cantidadRespuestas && pendingInfo.cantidadRespuestas > 0
-                ? "Cancelar y Perder Respuestas"
-                : "Cancelar y Crear Nueva"}
-            </Button>
-            <Button
-              onClick={handleContinuePending}
-              className="order-1 sm:order-2 bg-coviar-borravino hover:bg-coviar-borravino-dark text-white font-medium"
-            >
-              {!pendingInfo?.tieneSegmento
-                ? "Seleccionar Segmento"
-                : "Continuar Autoevaluación"}
+              Solo cancelar (sin iniciar nueva)
             </Button>
           </div>
         </DialogContent>

@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
         if (!response.ok) {
             console.error('Proxy: Error al crear autoevaluación:', response.status, data)
             return NextResponse.json(
-                { message: data.message || `Error ${response.status}: ${response.statusText}` },
+                { message: data.message || data.error || `Error ${response.status}: ${response.statusText}` },
                 { status: response.status }
             )
         }
