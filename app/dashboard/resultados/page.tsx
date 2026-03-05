@@ -116,12 +116,18 @@ function getChapterColor(nombre: string) {
 // Función para formatear fecha en formato dd/mm/aa HH:mm
 function formatDate(dateString: string): string {
     const date = new Date(dateString)
-    const day = date.getDate().toString().padStart(2, '0')
-    const month = (date.getMonth() + 1).toString().padStart(2, '0')
-    const year = date.getFullYear().toString().slice(-2)
-    const hours = date.getHours().toString().padStart(2, '0')
-    const minutes = date.getMinutes().toString().padStart(2, '0')
-    return `${day}/${month}/${year} - ${hours}:${minutes} hs`
+    const parts = new Intl.DateTimeFormat('es-AR', {
+        timeZone: 'America/Argentina/Buenos_Aires',
+        day: '2-digit',
+        month: '2-digit',
+        year: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+    }).formatToParts(date)
+    const p: Record<string, string> = {}
+    parts.forEach(({ type, value }) => { p[type] = value })
+    return `${p.day}/${p.month}/${p.year} - ${p.hour}:${p.minute} hs`
 }
 
 // ─── Configuración de líneas de referencia por segmento ──────────────────────
@@ -473,7 +479,7 @@ function LocalChapterCard({ capitulo, idAutoevaluacion }: { capitulo: CapituloLo
                     <div className="flex items-center gap-4">
                         <Badge
                             variant="secondary"
-                            className="text-base font-bold px-3 py-1"
+                            className="text-base font-bold px-3 py-1 whitespace-nowrap"
                             style={{ backgroundColor: `${color}15`, color }}
                         >
                             {capitulo.puntaje_obtenido} / {capitulo.puntaje_maximo} pts
@@ -531,7 +537,7 @@ function LocalChapterCard({ capitulo, idAutoevaluacion }: { capitulo: CapituloLo
                                     </div>
                                     <Badge
                                         variant="outline"
-                                        className="shrink-0 font-semibold"
+                                        className="shrink-0 font-semibold whitespace-nowrap"
                                         style={{
                                             borderColor: color,
                                             color: color
@@ -801,29 +807,7 @@ export default function ResultadosPage() {
                     return
                 }
 
-                // Intentar cargar desde localStorage solo si pertenece al usuario actual
-                const ultimoResultado = localStorage.getItem('ultimo_resultado_completado')
-                if (ultimoResultado) {
-                    try {
-                        const parsed = JSON.parse(ultimoResultado) as ResultadoLocal & { id_bodega?: number }
-                        // Verificar que el resultado pertenece a la bodega del usuario actual
-                        if (parsed.id_bodega && parsed.id_bodega === idBodega) {
-                            setResultadoLocal(parsed)
-                            // Cargar historial de todas formas para el gráfico
-                            await cargarHistorialComparativa()
-                            setIsLoading(false)
-                            return
-                        } else {
-                            // Resultado de otra bodega/usuario, limpiar y consultar API
-                            localStorage.removeItem('ultimo_resultado_completado')
-                        }
-                    } catch (e) {
-                        console.error('Error al parsear resultado local:', e)
-                        localStorage.removeItem('ultimo_resultado_completado')
-                    }
-                }
-
-                // Consultar la API
+                // Siempre consultar la API para obtener datos frescos
 
                 // Obtener historial de evaluaciones completadas
                 const historial = await obtenerHistorialAutoevaluaciones(idBodega)
@@ -858,7 +842,9 @@ export default function ResultadosPage() {
                     fecha_completo: ultimaEvaluacion.fecha_finalizacion || ultimaEvaluacion.fecha_inicio,
                     segmento: ultimaEvaluacion.nombre_segmento || 'N/A',
                     nombre_bodega: usuario.bodega?.nombre_fantasia || 'N/A',
-                    responsable: `${usuario.responsable?.nombre || ''} ${usuario.responsable?.apellido || ''}`.trim() || 'N/A',
+                    responsable: resultadosDetallados.responsable
+                        ? `${resultadosDetallados.responsable.nombre} ${resultadosDetallados.responsable.apellido}`.trim()
+                        : 'N/A',
                     capitulos: resultadosDetallados.capitulos?.map(cap => {
                         const capituloFormateado = {
                             id_capitulo: cap.id_capitulo,

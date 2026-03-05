@@ -100,6 +100,7 @@ export function EvaluationCard({
 
     const formatDate = (dateString: string) => {
         return new Date(dateString).toLocaleDateString('es-AR', {
+            timeZone: 'America/Argentina/Buenos_Aires',
             day: 'numeric',
             month: 'long',
             year: 'numeric',
@@ -146,7 +147,7 @@ export function EvaluationCard({
                 {/* Fecha */}
                 <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
                     <Calendar className="h-4 w-4" />
-                    {formatDate(evaluacion.fecha_inicio)}
+                    {formatDate(evaluacion.fecha_finalizacion || evaluacion.fecha_inicio)}
                 </div>
 
                 {/* Métricas principales con MAYOR SEPARACIÓN */}

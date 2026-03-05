@@ -91,6 +91,7 @@ export default function ConfiguracionPage() {
 
   // Modal de dar de baja
   const [showBajaModal, setShowBajaModal] = useState(false)
+  const [showForzarBajaModal, setShowForzarBajaModal] = useState(false)
   const [isProcessingBaja, setIsProcessingBaja] = useState(false)
 
   // Modal de nuevo responsable
@@ -322,7 +323,7 @@ export default function ConfiguracionPage() {
     }
   }
 
-  const handleDarDeBaja = async () => {
+  const handleDarDeBaja = async (cancelarPendientes = false) => {
     if (!responsableId) return
 
     setIsProcessingBaja(true)
@@ -331,18 +332,28 @@ export default function ConfiguracionPage() {
     try {
       const response = await fetch(`/api/responsables/${responsableId}/baja`, {
         method: 'POST',
-        credentials: 'include'
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cancelar_pendientes: cancelarPendientes }),
       })
 
       if (!response.ok) {
         const errorData = await response.json()
-        throw new Error(errorData.message || "Error al dar de baja al responsable")
+        const msg = errorData.message || "Error al dar de baja al responsable"
+
+        // Si hay autoevaluaciones pendientes, ofrecer cancelarlas
+        if (msg.toLowerCase().includes('pendiente')) {
+          setShowBajaModal(false)
+          setShowForzarBajaModal(true)
+          return
+        }
+
+        throw new Error(msg)
       }
 
       setShowBajaModal(false)
+      setShowForzarBajaModal(false)
       setSuccessMessage("Responsable dado de baja exitosamente")
-
-      // Recargar datos
       await loadData()
 
     } catch (err) {
@@ -674,7 +685,7 @@ export default function ConfiguracionPage() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle>Visualización</CardTitle>
+              <CardTitle>Accesibilidad</CardTitle>
               <CardDescription>Ajusta el tamaño del texto según tu pantalla y preferencias</CardDescription>
             </div>
             <Button variant="outline" size="sm" onClick={detectAutoSize} className="shrink-0 gap-2">
@@ -774,7 +785,7 @@ export default function ConfiguracionPage() {
             </Button>
             <Button
               variant="destructive"
-              onClick={handleDarDeBaja}
+              onClick={() => handleDarDeBaja(false)}
               disabled={isProcessingBaja}
             >
               {isProcessingBaja ? (
@@ -784,6 +795,46 @@ export default function ConfiguracionPage() {
                 </>
               ) : (
                 "Confirmar Baja"
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Modal para forzar baja cancelando autoevaluaciones pendientes */}
+      <Dialog open={showForzarBajaModal} onOpenChange={setShowForzarBajaModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <AlertTriangle className="h-5 w-5 text-destructive" />
+              Autoevaluación Pendiente
+            </DialogTitle>
+            <DialogDescription>
+              El responsable tiene una autoevaluación en curso. Si continuás, la evaluación pendiente será <strong>cancelada</strong> y el responsable será dado de baja.
+              <br /><br />
+              ¿Querés cancelar la evaluación pendiente y dar de baja a <strong>{formData.admin_first_name} {formData.admin_last_name}</strong>?
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setShowForzarBajaModal(false)}
+              disabled={isProcessingBaja}
+            >
+              Cancelar
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => handleDarDeBaja(true)}
+              disabled={isProcessingBaja}
+            >
+              {isProcessingBaja ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Procesando...
+                </>
+              ) : (
+                "Cancelar evaluación y dar de baja"
               )}
             </Button>
           </DialogFooter>
