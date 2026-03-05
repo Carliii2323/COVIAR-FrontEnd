@@ -875,16 +875,18 @@ export default function AutoevaluacionPage() {
   if (loadError) {
     return (
       <div className="flex items-center justify-center h-full p-8">
-        <Card className="max-w-md">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-destructive">
-              <AlertCircle className="h-5 w-5" />
-              Error al cargar
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <p className="text-muted-foreground">{loadError}</p>
-            <Button onClick={() => window.location.reload()} variant="outline" className="w-full">
+        <Card className="max-w-md w-full shadow-md" style={{ borderLeft: '4px solid #81242d' }}>
+          <CardContent className="pt-8 pb-6 px-6 space-y-4">
+            <div className="flex flex-col items-center text-center gap-3">
+              <div className="flex items-center justify-center w-14 h-14 rounded-full bg-red-50">
+                <AlertCircle className="h-7 w-7 text-[#81242d]" />
+              </div>
+              <div className="space-y-1">
+                <h3 className="font-semibold text-gray-900 text-lg">No se pudo cargar</h3>
+                <p className="text-sm text-muted-foreground">{loadError}</p>
+              </div>
+            </div>
+            <Button onClick={() => window.location.reload()} variant="outline" className="w-full border-[#81242d] text-[#81242d] hover:bg-[#81242d] hover:text-white transition-colors">
               Reintentar
             </Button>
           </CardContent>
@@ -906,8 +908,8 @@ export default function AutoevaluacionPage() {
               <div className="flex items-center gap-3 justify-between sm:justify-start w-full sm:w-auto">
                 <div className="flex-1 sm:flex-initial">
                   <div className="text-xs text-muted-foreground uppercase font-semibold">Categoría</div>
-                  <div className="font-bold text-lg leading-tight text-foreground truncate">
-                    {selectedSegment?.nombre.split(' ')[0] || "General"}
+                  <div className="font-bold text-lg leading-tight text-foreground whitespace-nowrap">
+                    {selectedSegment?.nombre || "General"}
                   </div>
                 </div>
 
@@ -945,7 +947,7 @@ export default function AutoevaluacionPage() {
                 <span>Progreso</span>
                 <span>{Math.round((Object.keys(responses).length / Math.max(1, estructura.reduce((acc, cap) => acc + cap.indicadores.filter(i => i.habilitado).length, 0))) * 100)}%</span>
               </div>
-              <div className="h-2 w-full bg-secondary rounded-full overflow-hidden">
+              <div className="h-3 w-full bg-secondary rounded-full overflow-hidden border border-black">
                 <div
                   className="h-full bg-gradient-to-r from-coviar-borravino to-coviar-red transition-all duration-500 ease-out"
                   style={{ width: `${(Object.keys(responses).length / Math.max(1, estructura.reduce((acc, cap) => acc + cap.indicadores.filter(i => i.habilitado).length, 0))) * 100}%` }}
@@ -1235,13 +1237,6 @@ export default function AutoevaluacionPage() {
                   : "Continuar Autoevaluación"}
               </Button>
             </div>
-            <Button
-              variant="ghost"
-              onClick={handleCancelPending}
-              className="text-sm text-muted-foreground hover:text-destructive"
-            >
-              Solo cancelar (sin iniciar nueva)
-            </Button>
           </div>
         </DialogContent>
       </Dialog>

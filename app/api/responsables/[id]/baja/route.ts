@@ -22,10 +22,13 @@ export async function POST(
             headers['Cookie'] = cookies
         }
 
+        const body = await request.text()
+
         const response = await fetch(`${API_BASE_URL}/api/responsables/${id}/baja`, {
             method: 'POST',
             headers,
             credentials: 'include',
+            body: body || undefined,
         })
 
         const data = await response.json().catch(() => ({}))

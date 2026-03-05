@@ -43,7 +43,7 @@ export function ChapterProgressCard({ capitulo }: ChapterProgressCardProps) {
                     } as React.CSSProperties}
                 />
 
-                <div className="text-xs text-muted-foreground">
+                <div className="text-xs text-muted-foreground whitespace-nowrap">
                     {capitulo.puntaje_obtenido} / {capitulo.puntaje_maximo} puntos
                 </div>
             </CardContent>
