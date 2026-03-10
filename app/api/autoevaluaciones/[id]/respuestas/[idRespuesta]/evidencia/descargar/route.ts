@@ -1,3 +1,4 @@
+import { logger } from '@/lib/utils/logger'
 import { NextRequest, NextResponse } from 'next/server'
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
@@ -28,7 +29,7 @@ export async function GET(
         }
 
         const backendUrl = `${API_BASE_URL}/api/autoevaluaciones/${id}/respuestas/${idRespuesta}/evidencia/descargar`
-        console.log(`Proxy evidencia descargar: GET ${backendUrl}`)
+        logger.log(`Proxy evidencia descargar: GET ${backendUrl}`)
 
         const response = await fetch(backendUrl, {
             method: 'GET',
@@ -38,7 +39,7 @@ export async function GET(
 
         if (!response.ok) {
             const errorText = await response.text().catch(() => '')
-            console.error('Proxy evidencia descargar: Error', response.status, errorText)
+            logger.error('Proxy evidencia descargar: Error', response.status, errorText)
             
             return NextResponse.json(
                 { message: `Error ${response.status}: No se pudo descargar la evidencia` },
@@ -69,7 +70,7 @@ export async function GET(
             },
         })
     } catch (error) {
-        console.error('Proxy evidencia descargar: Error de conexión:', error)
+        logger.error('Proxy evidencia descargar: Error de conexión:', error)
         return NextResponse.json(
             { message: 'No se pudo conectar con el servidor backend' },
             { status: 503 }

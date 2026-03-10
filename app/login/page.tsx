@@ -1,4 +1,5 @@
 "use client"
+import { logger } from "@/lib/utils/logger"
 
 import type React from "react"
 
@@ -27,33 +28,33 @@ export default function LoginPage() {
     setError(null)
 
     try {
-      console.log('Iniciando login con:', { email_login: email.trim() })
+      logger.log('Iniciando login con:', { email_login: email.trim() })
 
       const usuario = await loginUsuario({
         email_login: email.trim(),
         password: password.trim(),
       })
 
-      console.log('Login exitoso, usuario recibido:', usuario)
+      logger.log('Login exitoso, usuario recibido:', usuario)
 
       // Guardar datos del usuario en localStorage (ya se hace en loginUsuario, pero por si acaso)
       localStorage.setItem('usuario', JSON.stringify(usuario))
 
-      console.log('Usuario guardado en localStorage')
-      console.log('Verificando localStorage:', localStorage.getItem('usuario'))
+      logger.log('Usuario guardado en localStorage')
+      logger.log('Verificando localStorage:', localStorage.getItem('usuario'))
 
       // Redirigir según el tipo de cuenta
-      const tipoCuenta = (usuario as any)?.tipo || localStorage.getItem('tipoCuenta')
+      const tipoCuenta = usuario?.tipo || localStorage.getItem('tipoCuenta')
 
       if (tipoCuenta === 'ADMINISTRADOR_APP') {
-        console.log('Redirigiendo a /admin (Administrador)')
+        logger.log('Redirigiendo a /admin (Administrador)')
         router.push("/admin")
       } else {
-        console.log('Redirigiendo a /dashboard (Usuario normal)')
+        logger.log('Redirigiendo a /dashboard (Usuario normal)')
         router.push("/dashboard")
       }
     } catch (error: unknown) {
-      console.error('Error en login:', error)
+      logger.error('Error en login:', error)
       const errorMessage = error instanceof Error ? error.message : "Ocurrió un error al iniciar sesión"
 
       // Personalizar mensaje para error de credenciales incorrectas

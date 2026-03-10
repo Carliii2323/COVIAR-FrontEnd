@@ -1,4 +1,6 @@
 // /lib/api/admin.ts
+import { logger } from '@/lib/utils/logger'
+
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
 
 export interface SegmentoDistribucion {
@@ -75,7 +77,7 @@ export async function getAdminStats(): Promise<AdminStats> {
     const data = await response.json()
     return data
   } catch (error) {
-    console.error('Error al obtener estadísticas:', error)
+    logger.error('Error al obtener estadísticas:', error)
     throw error
   }
 }
@@ -103,7 +105,7 @@ export async function getEvaluaciones(estado?: string, idBodega?: number): Promi
     const data = await response.json()
     return data
   } catch (error) {
-    console.error('Error al obtener evaluaciones:', error)
+    logger.error('Error al obtener evaluaciones:', error)
     throw error
   }
 }

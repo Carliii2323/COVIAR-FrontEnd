@@ -3,6 +3,7 @@
 'use client'
 
 import { useEffect, useState, useCallback } from 'react'
+import { logger } from '@/lib/utils/logger'
 import { useRouter } from 'next/navigation'
 import {
   getCurrentUser,
@@ -42,7 +43,7 @@ export function useAuth() {
     try {
       await logoutUsuario()
     } catch (error) {
-      console.error('Error al cerrar sesión:', error)
+      logger.error('Error al cerrar sesión:', error)
     } finally {
       clearAuthData()
       setUsuario(null)

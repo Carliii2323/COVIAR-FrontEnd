@@ -3,6 +3,11 @@ import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
 import type { AutoevaluacionHistorial, ResultadoDetallado } from '@/lib/api/types'
 
+type TableCellContent = string | number | { content: string | number; rowSpan?: number; styles?: Record<string, unknown> }
+type TableRow = TableCellContent[]
+
+type JsPDFWithAutoTable = jsPDF & { lastAutoTable: { finalY: number } }
+
 // ============= DATOS DE USUARIO =============
 
 interface DatosUsuario {
@@ -421,8 +426,7 @@ export function exportResultadoDetalladoToPDF(
 
     // === TABLA UNIFICADA DE INDICADORES POR CAPITULO ===
     // Construir filas con rowSpan para agrupar por capitulo
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const tableBody: any[][] = []
+    const tableBody: TableRow[] = []
     // Mapa de fila -> URL de descarga de evidencia
     const evidenceLinks = new Map<number, string>()
     let tableRowIdx = 0
@@ -446,7 +450,7 @@ export function exportResultadoDetalladoToPDF(
             tableRowIdx++
         } else {
             indicadores.forEach((ind, idx) => {
-                const row: any[] = [] // eslint-disable-line @typescript-eslint/no-explicit-any
+                const row: TableRow = []
                 if (idx === 0) {
                     row.push({ content: cap.nombre, rowSpan: rowCount, styles: { fontStyle: 'bold', valign: 'middle' } })
                 }
@@ -513,8 +517,7 @@ export function exportResultadoDetalladoToPDF(
         },
     })
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    y = (doc as any).lastAutoTable.finalY + 8
+    y = (doc as JsPDFWithAutoTable).lastAutoTable.finalY + 8
 
     // === RESULTADO FINAL ===
     if (y > doc.internal.pageSize.height - 50) {

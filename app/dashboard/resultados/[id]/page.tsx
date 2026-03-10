@@ -1,4 +1,5 @@
 "use client"
+import { logger } from "@/lib/utils/logger"
 
 import { useEffect, useState, use } from "react"
 import { useRouter } from "next/navigation"
@@ -86,7 +87,7 @@ export default function ResultadoDetallePage({ params }: PageProps) {
                 
                 setResultado(parsed)
             } catch (e) {
-                console.error("Error al parsear resultado:", e)
+                logger.error("Error al parsear resultado:", e)
                 setError("No se pudo cargar el resultado guardado.")
             }
         } else {
@@ -113,7 +114,7 @@ export default function ResultadoDetallePage({ params }: PageProps) {
                 alert("No se pudo identificar la bodega para crear una nueva evaluación.")
             }
         } catch (err) {
-            console.error('Error al crear nueva evaluación:', err)
+            logger.error('Error al crear nueva evaluación:', err)
             alert('Error al iniciar nueva evaluación')
         } finally {
             setIsCreating(false)

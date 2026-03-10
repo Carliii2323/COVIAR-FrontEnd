@@ -1,4 +1,5 @@
 "use client"
+import { logger } from "@/lib/utils/logger"
 
 import { useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
@@ -72,7 +73,7 @@ export function EvaluationCard({
                 exportResultadoDetalladoToCSV(data, `evaluacion_${evaluacion.id_autoevaluacion}`)
             }
         } catch (err) {
-            console.error('Error al exportar CSV:', err)
+            logger.error('Error al exportar CSV:', err)
         } finally {
             setExportingCSV(false)
         }
@@ -92,7 +93,7 @@ export function EvaluationCard({
                 exportResultadoDetalladoToPDF(data, bodegaNombre, `evaluacion_${evaluacion.id_autoevaluacion}`)
             }
         } catch (err) {
-            console.error('Error al exportar PDF:', err)
+            logger.error('Error al exportar PDF:', err)
         } finally {
             setExportingPDF(false)
         }

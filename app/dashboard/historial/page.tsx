@@ -1,4 +1,5 @@
 "use client"
+import { logger } from "@/lib/utils/logger"
 
 import { useEffect, useState, useCallback } from "react"
 import Link from "next/link"
@@ -100,7 +101,7 @@ export default function HistorialPage() {
           localStorage.removeItem(CACHE_KEY)
         }
       } catch (err) {
-        console.error('Error al cargar historial:', err)
+        logger.error('Error al cargar historial:', err)
         setError('Error al cargar el historial. Verifica tu conexión.')
       } finally {
         setIsLoading(false)
@@ -126,7 +127,7 @@ export default function HistorialPage() {
       })
       return resultado
     } catch (err) {
-      console.error('Error al cargar detalles:', err)
+      logger.error('Error al cargar detalles:', err)
       return null
     } finally {
       setLoadingDetails(null)

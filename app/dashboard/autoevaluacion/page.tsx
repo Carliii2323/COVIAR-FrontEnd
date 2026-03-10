@@ -1,4 +1,5 @@
 "use client"
+import { logger } from "@/lib/utils/logger"
 
 import { useState, useEffect, useRef } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -80,7 +81,7 @@ export default function AutoevaluacionPage() {
     cantidadRespuestas: number
     id_segmento: number | null
   } | null>(null)
-  const [savedResponses, setSavedResponses] = useState<Array<{ id_respuesta?: number, id_indicador: number, id_nivel_respuesta: number }>>([])
+  const [savedResponses, setSavedResponses] = useState<Array<{ id_respuesta?: number, id?: number, id_indicador: number, id_nivel_respuesta: number }>>([])
 
   // Estado para evidencias cargadas (id_indicador -> nombre_archivo)
   const [evidencias, setEvidencias] = useState<Record<number, string | null>>({})
@@ -91,12 +92,12 @@ export default function AutoevaluacionPage() {
   // Función auxiliar para cargar evidencias existentes
   const cargarEvidenciasExistentes = async (autoId: string, respuestaIdMap: Record<number, number>) => {
     if (Object.keys(respuestaIdMap).length === 0) {
-      console.log('⚠️ No hay respuestas con id_respuesta, no se pueden cargar evidencias')
+      logger.log('⚠️ No hay respuestas con id_respuesta, no se pueden cargar evidencias')
       return
     }
 
-    console.log('🔄 Cargando evidencias existentes...')
-    console.log('📋 Mapa de respuestas:', respuestaIdMap)
+    logger.log('🔄 Cargando evidencias existentes...')
+    logger.log('📋 Mapa de respuestas:', respuestaIdMap)
     const evidenciasMap: Record<number, string | null> = {}
     let cargadas = 0
     let errores = 0
@@ -104,32 +105,32 @@ export default function AutoevaluacionPage() {
     for (const [idIndicadorStr, idRespuesta] of Object.entries(respuestaIdMap)) {
       const idIndicador = parseInt(idIndicadorStr)
       try {
-        console.log(`🔍 Buscando evidencia para indicador ${idIndicador}, respuesta ${idRespuesta}`)
+        logger.log(`🔍 Buscando evidencia para indicador ${idIndicador}, respuesta ${idRespuesta}`)
         const evidencia = await obtenerEvidencia(autoId, idRespuesta)
         
         if (evidencia?.nombre_archivo) {
           evidenciasMap[idIndicador] = evidencia.nombre_archivo
           cargadas++
-          console.log(`📎 Evidencia cargada para indicador ${idIndicador}:`, evidencia.nombre_archivo)
+          logger.log(`📎 Evidencia cargada para indicador ${idIndicador}:`, evidencia.nombre_archivo)
         } else if (evidencia) {
           // El objeto evidencia existe pero no tiene nombre_archivo
-          console.warn(`⚠️ Evidencia existe pero sin nombre_archivo para indicador ${idIndicador}:`, evidencia)
+          logger.warn(`⚠️ Evidencia existe pero sin nombre_archivo para indicador ${idIndicador}:`, evidencia)
         } else {
-          console.log(`ℹ️ No hay evidencia para indicador ${idIndicador}`)
+          logger.log(`ℹ️ No hay evidencia para indicador ${idIndicador}`)
         }
       } catch (error) {
         errores++
-        console.error(`❌ Error al cargar evidencia para indicador ${idIndicador}:`, error)
+        logger.error(`❌ Error al cargar evidencia para indicador ${idIndicador}:`, error)
       }
     }
     
-    console.log(`📊 Resumen: ${cargadas} evidencias cargadas, ${errores} errores`)
+    logger.log(`📊 Resumen: ${cargadas} evidencias cargadas, ${errores} errores`)
     
     if (Object.keys(evidenciasMap).length > 0) {
       setEvidencias(evidenciasMap)
-      console.log(`✅ Estado actualizado con ${Object.keys(evidenciasMap).length} evidencias`, evidenciasMap)
+      logger.log(`✅ Estado actualizado con ${Object.keys(evidenciasMap).length} evidencias`, evidenciasMap)
     } else {
-      console.log('ℹ️ No se encontraron evidencias para cargar')
+      logger.log('ℹ️ No se encontraron evidencias para cargar')
     }
   }
 
@@ -154,7 +155,7 @@ export default function AutoevaluacionPage() {
 
       setIdBodega(bodegaId)
     } catch (error) {
-      console.error('Error al obtener usuario:', error)
+      logger.error('Error al obtener usuario:', error)
       router.push("/login")
     }
   }, [router])
@@ -173,14 +174,14 @@ export default function AutoevaluacionPage() {
         const auto = data.autoevaluacion_pendiente
         const respuestasGuardadas = data.respuestas || []
 
-        console.log('Respuesta crearAutoevaluacion:', { httpStatus, auto, respuestasGuardadas })
+        logger.log('Respuesta crearAutoevaluacion:', { httpStatus, auto, respuestasGuardadas })
 
         const autoId = String(auto.id_autoevaluacion)
         setAssessmentId(autoId)
 
         // CASO 1: Nueva autoevaluación creada (201)
         if (httpStatus === 201) {
-          console.log('CASO 1: Nueva autoevaluación creada')
+          logger.log('CASO 1: Nueva autoevaluación creada')
           // Ir directo a selección de segmentos
           const segmentosData = await obtenerSegmentos(autoId)
           setSegmentos(segmentosData)
@@ -206,7 +207,7 @@ export default function AutoevaluacionPage() {
         }
 
       } catch (error) {
-        console.error('Error al iniciar autoevaluación:', error)
+        logger.error('Error al iniciar autoevaluación:', error)
         setLoadError(error instanceof Error ? error.message : 'Error al crear la autoevaluación')
       } finally {
         setIsLoading(false)
@@ -221,7 +222,7 @@ export default function AutoevaluacionPage() {
     if (!pendingInfo) return
 
     const autoId = String(pendingInfo.id)
-    console.log('Continuando con autoevaluación pendiente:', autoId)
+    logger.log('Continuando con autoevaluación pendiente:', autoId)
 
     setShowPendingDialog(false)
     setIsLoading(true)
@@ -230,7 +231,7 @@ export default function AutoevaluacionPage() {
     try {
       // CASO 2: Pendiente SIN segmento - ir a selección de segmentos
       if (!pendingInfo.tieneSegmento) {
-        console.log('CASO 2: Pendiente sin segmento - mostrando selector')
+        logger.log('CASO 2: Pendiente sin segmento - mostrando selector')
         const segmentosData = await obtenerSegmentos(autoId)
         setSegmentos(segmentosData)
         setIsSelectingSegment(true)
@@ -239,7 +240,7 @@ export default function AutoevaluacionPage() {
       }
 
       // CASOS 3 y 4: Pendiente CON segmento - cargar estructura
-      console.log('CASO 3/4: Pendiente con segmento - cargando estructura')
+      logger.log('CASO 3/4: Pendiente con segmento - cargando estructura')
       
       // Obtener la lista de segmentos para recuperar el segmento completo
       const segmentosData = await obtenerSegmentos(autoId)
@@ -249,9 +250,9 @@ export default function AutoevaluacionPage() {
       const segmentoActual = segmentosData.find(seg => seg.id_segmento === pendingInfo.id_segmento)
       if (segmentoActual) {
         setSelectedSegment(segmentoActual)
-        console.log('Segmento recuperado:', segmentoActual.nombre)
+        logger.log('Segmento recuperado:', segmentoActual.nombre)
       } else {
-        console.warn('⚠️ No se encontró el segmento con id:', pendingInfo.id_segmento)
+        logger.warn('⚠️ No se encontró el segmento con id:', pendingInfo.id_segmento)
       }
       
       const estructuraResponse = await obtenerEstructuraAutoevaluacion(autoId)
@@ -283,19 +284,19 @@ export default function AutoevaluacionPage() {
           savedResponses.forEach(r => {
             uniqueResponses.set(r.id_indicador, r.id_nivel_respuesta)
             // Capturar id_respuesta si viene del backend (intentar ambos nombres: id_respuesta o id)
-            const idRespuesta = r.id_respuesta || (r as any).id
+            const idRespuesta = r.id_respuesta || r.id
             if (idRespuesta) {
               respuestaIdMap[r.id_indicador] = idRespuesta
             }
           })
 
           if (savedResponses.length !== uniqueResponses.size) {
-            console.warn(`⚠️ API devolvió ${savedResponses.length} respuestas pero solo ${uniqueResponses.size} son únicas`)
+            logger.warn(`⚠️ API devolvió ${savedResponses.length} respuestas pero solo ${uniqueResponses.size} son únicas`)
           }
 
-          console.log(`📊 Respuestas guardadas procesadas: ${savedResponses.length} respuestas, ${Object.keys(respuestaIdMap).length} con id_respuesta`)
+          logger.log(`📊 Respuestas guardadas procesadas: ${savedResponses.length} respuestas, ${Object.keys(respuestaIdMap).length} con id_respuesta`)
           if (savedResponses.length > 0 && Object.keys(respuestaIdMap).length === 0) {
-            console.warn('⚠️ Backend no devolvió id_respuesta. Intentando cargar desde evidencias...')
+            logger.warn('⚠️ Backend no devolvió id_respuesta. Intentando cargar desde evidencias...')
           }
 
           // Buscar el nivel de puntos para cada respuesta guardada
@@ -321,7 +322,7 @@ export default function AutoevaluacionPage() {
           // WORKAROUND: Si el backend no devuelve id_respuesta, intentar obtenerlos desde las evidencias
           // Esto funciona porque las evidencias SÍ incluyen id_respuesta en su respuesta
           if (Object.keys(respuestaIdMap).length === 0) {
-            console.log('🔍 Buscando id_respuesta desde evidencias existentes...')
+            logger.log('🔍 Buscando id_respuesta desde evidencias existentes...')
             const evidenciasMap: Record<number, string | null> = {}
             const respuestaIdMapFromEvidencias: Record<number, number> = {}
             
@@ -338,9 +339,9 @@ export default function AutoevaluacionPage() {
                   // CLAVE: Extraer id_respuesta de la respuesta de evidencia
                   if (evidencia.id_respuesta) {
                     respuestaIdMapFromEvidencias[idIndicador] = evidencia.id_respuesta
-                    console.log(`✅ Evidencia encontrada para indicador ${idIndicador}: "${nombreArchivo}" (id_respuesta: ${evidencia.id_respuesta})`)
+                    logger.log(`✅ Evidencia encontrada para indicador ${idIndicador}: "${nombreArchivo}" (id_respuesta: ${evidencia.id_respuesta})`)
                   } else {
-                    console.log(`✅ Evidencia encontrada para indicador ${idIndicador}: "${nombreArchivo}" (sin id_respuesta)`)
+                    logger.log(`✅ Evidencia encontrada para indicador ${idIndicador}: "${nombreArchivo}" (sin id_respuesta)`)
                   }
                 } else {
                   evidenciasMap[idIndicador] = null
@@ -355,30 +356,30 @@ export default function AutoevaluacionPage() {
             const evidenciasEncontradas = Object.keys(evidenciasMap).filter(k => evidenciasMap[parseInt(k)] !== null).length
             if (evidenciasEncontradas > 0) {
               setEvidencias(evidenciasMap)
-              console.log(`📎 Cargadas ${evidenciasEncontradas} evidencias desde el servidor`)
+              logger.log(`📎 Cargadas ${evidenciasEncontradas} evidencias desde el servidor`)
             }
             
             // Actualizar mapeo de id_respuesta si se encontraron
             if (Object.keys(respuestaIdMapFromEvidencias).length > 0) {
               setRespuestaIds(respuestaIdMapFromEvidencias)
-              console.log(`🆔 Mapeo id_respuesta extraído desde evidencias:`, respuestaIdMapFromEvidencias)
+              logger.log(`🆔 Mapeo id_respuesta extraído desde evidencias:`, respuestaIdMapFromEvidencias)
             }
           } else {
             // El backend SÍ devolvió id_respuesta (caso ideal)
             setRespuestaIds(respuestaIdMap)
-            console.log('Mapeo id_indicador -> id_respuesta cargado desde backend:', respuestaIdMap)
+            logger.log('Mapeo id_indicador -> id_respuesta cargado desde backend:', respuestaIdMap)
             
             // Cargar evidencias existentes usando función auxiliar
             await cargarEvidenciasExistentes(autoId, respuestaIdMap)
           }
           
-          console.log(`✅ Cargadas ${Object.keys(apiResponsesMap).length} respuestas guardadas (únicas)`)
+          logger.log(`✅ Cargadas ${Object.keys(apiResponsesMap).length} respuestas guardadas (únicas)`)
         }
 
         setIsSelectingSegment(false)
       }
     } catch (error) {
-      console.error('Error al continuar autoevaluación:', error)
+      logger.error('Error al continuar autoevaluación:', error)
       setLoadError(error instanceof Error ? error.message : 'Error al cargar la autoevaluación pendiente')
     } finally {
       setIsLoading(false)
@@ -390,7 +391,7 @@ export default function AutoevaluacionPage() {
     if (!pendingInfo) return
 
     const autoId = String(pendingInfo.id)
-    console.log('Cancelando autoevaluación:', autoId)
+    logger.log('Cancelando autoevaluación:', autoId)
 
     setShowPendingDialog(false)
     setIsLoading(true)
@@ -398,7 +399,7 @@ export default function AutoevaluacionPage() {
     try {
       await cancelarAutoevaluacion(autoId)
     } catch (error) {
-      console.error('Error al cancelar autoevaluación:', error)
+      logger.error('Error al cancelar autoevaluación:', error)
     }
 
     // Redirigir al dashboard; si el usuario quiere iniciar una nueva
@@ -411,7 +412,7 @@ export default function AutoevaluacionPage() {
     if (!pendingInfo || !idBodega) return
 
     const autoId = String(pendingInfo.id)
-    console.log('Cancelando y creando nueva autoevaluación:', autoId)
+    logger.log('Cancelando y creando nueva autoevaluación:', autoId)
 
     setShowPendingDialog(false)
     setIsLoading(true)
@@ -419,7 +420,7 @@ export default function AutoevaluacionPage() {
     try {
       await cancelarAutoevaluacion(autoId)
     } catch (error) {
-      console.error('Error al cancelar autoevaluación:', error)
+      logger.error('Error al cancelar autoevaluación:', error)
     }
 
     setPendingInfo(null)
@@ -436,7 +437,7 @@ export default function AutoevaluacionPage() {
       setSegmentos(segmentosData)
       setIsSelectingSegment(true)
     } catch (error) {
-      console.error('Error al crear nueva autoevaluación:', error)
+      logger.error('Error al crear nueva autoevaluación:', error)
       setLoadError(error instanceof Error ? error.message : 'Error al crear la autoevaluación')
     } finally {
       setIsLoading(false)
@@ -509,7 +510,7 @@ export default function AutoevaluacionPage() {
     // CASO 1: Si está cambiando a "Mínimo no alcanzado" (puntos = 0) y tiene evidencia, eliminarla
     // (No se puede tener evidencia si no se alcanza el mínimo)
     if (newLevel === 0 && idRespuestaAnterior && tieneEvidencia) {
-      console.log(`🗑️ Eliminando evidencia al cambiar a "Mínimo no alcanzado" (indicador ${idIndicador})`)
+      logger.log(`🗑️ Eliminando evidencia al cambiar a "Mínimo no alcanzado" (indicador ${idIndicador})`)
       try {
         await eliminarEvidencia(assessmentId, idRespuestaAnterior)
         // Limpiar el estado de evidencias para este indicador
@@ -518,15 +519,15 @@ export default function AutoevaluacionPage() {
           delete updated[idIndicador]
           return updated
         })
-        console.log(`✅ Evidencia eliminada exitosamente`)
+        logger.log(`✅ Evidencia eliminada exitosamente`)
       } catch (error) {
-        console.error('❌ Error al eliminar evidencia:', error)
+        logger.error('❌ Error al eliminar evidencia:', error)
         // Continuar con el cambio de respuesta aunque falle la eliminación
       }
     }
     // CASO 2: Si la respuesta está cambiando (es diferente) y hay evidencia asociada, eliminarla
     else if (respuestaAnterior !== undefined && respuestaAnterior !== newNivelId && idRespuestaAnterior && tieneEvidencia) {
-      console.log(`🗑️ Eliminando evidencia anterior del indicador ${idIndicador} (respuesta ${idRespuestaAnterior})`)
+      logger.log(`🗑️ Eliminando evidencia anterior del indicador ${idIndicador} (respuesta ${idRespuestaAnterior})`)
       try {
         await eliminarEvidencia(assessmentId, idRespuestaAnterior)
         // Limpiar el estado de evidencias para este indicador
@@ -535,9 +536,9 @@ export default function AutoevaluacionPage() {
           delete updated[idIndicador]
           return updated
         })
-        console.log(`✅ Evidencia eliminada exitosamente`)
+        logger.log(`✅ Evidencia eliminada exitosamente`)
       } catch (error) {
-        console.error('❌ Error al eliminar evidencia anterior:', error)
+        logger.error('❌ Error al eliminar evidencia anterior:', error)
         // Continuar con el cambio de respuesta aunque falle la eliminación
       }
     }
@@ -565,20 +566,20 @@ export default function AutoevaluacionPage() {
     const indicadoresIds = respuestasArray.map(r => r.id_indicador)
     const hasDuplicates = indicadoresIds.length !== new Set(indicadoresIds).size
     if (hasDuplicates) {
-      console.error('⚠️ ERROR: Respuestas duplicadas detectadas:', indicadoresIds)
+      logger.error('⚠️ ERROR: Respuestas duplicadas detectadas:', indicadoresIds)
       // No debería pasar nunca con un objeto, pero por seguridad
       return
     }
 
-    console.log('=== GUARDANDO RESPUESTAS ===')
-    console.log('Total a enviar:', respuestasArray.length)
-    console.log('Respuestas:', respuestasArray)
+    logger.log('=== GUARDANDO RESPUESTAS ===')
+    logger.log('Total a enviar:', respuestasArray.length)
+    logger.log('Respuestas:', respuestasArray)
 
     savingCount.current++
     setIsSaving(true)
     try {
       const respuestasGuardadas = await guardarRespuestas(assessmentId, respuestasArray)
-      console.log(`✅ Guardadas ${respuestasArray.length} respuestas exitosamente`)
+      logger.log(`✅ Guardadas ${respuestasArray.length} respuestas exitosamente`)
 
       // Capturar los id_respuesta devueltos por el backend
       let idsUpdated = false
@@ -595,7 +596,7 @@ export default function AutoevaluacionPage() {
 
       // Fallback: si guardarRespuestas no devolvió IDs, intentar POST individual para el indicador actual
       if (!idsUpdated) {
-        console.log('⚠️ guardarRespuestas no devolvió id_respuesta, intentando POST individual...')
+        logger.log('⚠️ guardarRespuestas no devolvió id_respuesta, intentando POST individual...')
         try {
           const result = await guardarRespuestaIndividual(
             assessmentId,
@@ -605,19 +606,19 @@ export default function AutoevaluacionPage() {
           if (result?.id_respuesta != null) {
             newRespuestaIds[indicador.indicador.id_indicador] = result.id_respuesta
             idsUpdated = true
-            console.log(`Resuelto id_respuesta=${result.id_respuesta} para indicador ${indicador.indicador.id_indicador}`)
+            logger.log(`Resuelto id_respuesta=${result.id_respuesta} para indicador ${indicador.indicador.id_indicador}`)
           }
         } catch (e) {
-          console.warn('No se pudo obtener id_respuesta vía POST individual:', e)
+          logger.warn('No se pudo obtener id_respuesta vía POST individual:', e)
         }
       }
 
       if (idsUpdated) {
         setRespuestaIds(newRespuestaIds)
-        console.log('Mapeo id_indicador -> id_respuesta actualizado:', newRespuestaIds)
+        logger.log('Mapeo id_indicador -> id_respuesta actualizado:', newRespuestaIds)
       }
     } catch (error) {
-      console.error('❌ Error al guardar respuestas:', error)
+      logger.error('❌ Error al guardar respuestas:', error)
     } finally {
       savingCount.current--
       if (savingCount.current === 0) {
@@ -687,7 +688,7 @@ export default function AutoevaluacionPage() {
         nivelBackend = resultadoBackend.nivel_sostenibilidad.nombre
       }
     } catch (apiError) {
-      console.warn('La API falló al finalizar, procediendo con guardado local:', apiError)
+      logger.warn('La API falló al finalizar, procediendo con guardado local:', apiError)
       // Continuamos flujo para guardar localmente
     }
 
@@ -753,7 +754,7 @@ export default function AutoevaluacionPage() {
             }
           }
         } catch (e) {
-          console.error('Error al obtener responsable:', e)
+          logger.error('Error al obtener responsable:', e)
         }
       }
 
@@ -787,7 +788,7 @@ export default function AutoevaluacionPage() {
       // Redirigir a la página de resultados principal
       router.push('/dashboard/resultados')
     } catch (error) {
-      console.error('Error al finalizar:', error)
+      logger.error('Error al finalizar:', error)
       alert(error instanceof Error ? error.message : 'Error al finalizar la autoevaluación')
       setIsFinalizing(false)
     } finally {
@@ -803,7 +804,7 @@ export default function AutoevaluacionPage() {
       const data = await obtenerSegmentos(assessmentId)
       setSegmentos(data)
     } catch (error) {
-      console.error('Error al cargar segmentos:', error)
+      logger.error('Error al cargar segmentos:', error)
       alert('Error al cargar segmentos disponibles')
       setIsSelectingSegment(false)
     } finally {
@@ -834,7 +835,7 @@ export default function AutoevaluacionPage() {
       
       // Cargar evidencias si hay respuestas guardadas
       if (Object.keys(respuestaIds).length > 0) {
-        console.log('🔄 Recargando evidencias después de cambiar segmento...')
+        logger.log('🔄 Recargando evidencias después de cambiar segmento...')
         await cargarEvidenciasExistentes(currentId, respuestaIds)
       }
       
@@ -846,7 +847,7 @@ export default function AutoevaluacionPage() {
         setIsSelectingSegment(false)
       }
     } catch (error) {
-      console.error('Error al procesar segmento:', error)
+      logger.error('Error al procesar segmento:', error)
       alert(error instanceof Error ? error.message : 'Error al procesar el segmento')
     } finally {
       setIsLoading(false)

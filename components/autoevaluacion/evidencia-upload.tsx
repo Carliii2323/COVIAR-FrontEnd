@@ -1,4 +1,5 @@
 "use client"
+import { logger } from "@/lib/utils/logger"
 
 import { useState, useRef, useCallback, useEffect } from "react"
 import { Button } from "@/components/ui/button"
@@ -113,13 +114,13 @@ export function EvidenciaUpload({
     // Sincronizar archivo existente con estado local
     useEffect(() => {
         if (archivoExistente) {
-            console.log(`📁 Inicializando archivo existente para indicador ${idIndicador}:`, archivoExistente)
+            logger.log(`📁 Inicializando archivo existente para indicador ${idIndicador}:`, archivoExistente)
             setNombreArchivo(archivoExistente)
             setStatus("has-file")
             setErrorMessage(null) // Limpiar cualquier error previo
         } else if (archivoExistente === null && nombreArchivo !== null) {
             // Si archivoExistente cambió a null, resetear el componente
-            console.log(`🗑️ Reseteando evidencia para indicador ${idIndicador}`)
+            logger.log(`🗑️ Reseteando evidencia para indicador ${idIndicador}`)
             setNombreArchivo(null)
             setStatus("idle")
             setErrorMessage(null)
@@ -137,23 +138,23 @@ export function EvidenciaUpload({
 
         // Si no tenemos idNivelRespuesta, no podemos re-enviar
         if (idNivelRespuesta == null) {
-            console.warn(`No hay idNivelRespuesta para indicador ${idIndicador}, no se puede resolver id_respuesta`)
+            logger.warn(`No hay idNivelRespuesta para indicador ${idIndicador}, no se puede resolver id_respuesta`)
             return null
         }
 
-        console.log(`Resolviendo id_respuesta para indicador ${idIndicador} via POST individual...`)
+        logger.log(`Resolviendo id_respuesta para indicador ${idIndicador} via POST individual...`)
 
         try {
             const result = await guardarRespuestaIndividual(idAutoevaluacion, idIndicador, idNivelRespuesta)
 
             if (result?.id_respuesta != null) {
-                console.log(`Resuelto id_respuesta=${result.id_respuesta} para indicador ${idIndicador}`)
+                logger.log(`Resuelto id_respuesta=${result.id_respuesta} para indicador ${idIndicador}`)
                 setResolvedIdRespuesta(result.id_respuesta)
                 onIdRespuestaResolved?.(idIndicador, result.id_respuesta)
                 return result.id_respuesta
             }
         } catch (error) {
-            console.warn('Error resolviendo id_respuesta via POST:', error)
+            logger.warn('Error resolviendo id_respuesta via POST:', error)
         }
 
         return null
@@ -215,14 +216,14 @@ export function EvidenciaUpload({
 
         // Subir archivo
         try {
-            console.log(`📤 Subiendo evidencia para indicador ${idIndicador}, respuesta ${effectiveIdRespuesta}`)
+            logger.log(`📤 Subiendo evidencia para indicador ${idIndicador}, respuesta ${effectiveIdRespuesta}`)
             const response = await subirEvidencia(idAutoevaluacion, effectiveIdRespuesta, pendingFile)
             stopProgressBar(100)
             
             // El backend puede devolver 'nombre_archivo' o 'nombre'
             const nombreArchivoSubido = response.evidencia?.nombre_archivo || response.evidencia?.nombre || pendingFile.name
-            console.log(`✅ Evidencia subida exitosamente:`, nombreArchivoSubido)
-            console.log(`📋 Respuesta del backend:`, response)
+            logger.log(`✅ Evidencia subida exitosamente:`, nombreArchivoSubido)
+            logger.log(`📋 Respuesta del backend:`, response)
             
             setNombreArchivo(nombreArchivoSubido)
             setStatus("success")
@@ -234,7 +235,7 @@ export function EvidenciaUpload({
                 setStatus("has-file")
             }, 2500)
         } catch (error) {
-            console.error(`❌ Error al subir evidencia para indicador ${idIndicador}:`, error)
+            logger.error(`❌ Error al subir evidencia para indicador ${idIndicador}:`, error)
             stopProgressBar(0)
             setStatus("error")
             

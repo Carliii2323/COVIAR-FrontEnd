@@ -1,4 +1,5 @@
 "use client"
+import { logger } from "@/lib/utils/logger"
 
 import { useState, useEffect } from "react"
 import { solicitarRestablecimientoPassword } from "@/lib/api/auth"
@@ -134,7 +135,7 @@ export default function ConfiguracionPage() {
       setFormData(newFormData)
       setOriginalData(newFormData)
     } catch (err) {
-      console.error("Error cargando datos:", err)
+      logger.error("Error cargando datos:", err)
       setError(err instanceof Error ? err.message : "Error al cargar los datos")
     } finally {
       setIsLoading(false)
@@ -173,7 +174,7 @@ export default function ConfiguracionPage() {
       setIsEditing(false)
       setSuccessMessage("Cambios guardados exitosamente")
     } catch (err) {
-      console.error("Error guardando:", err)
+      logger.error("Error guardando:", err)
       setError(err instanceof Error ? err.message : "Error al guardar los cambios")
     } finally {
       setIsSaving(false)
@@ -210,7 +211,7 @@ export default function ConfiguracionPage() {
       await solicitarRestablecimientoPassword(email)
       setSuccessMessage("Se ha enviado un correo con instrucciones para cambiar tu contraseña")
     } catch (err) {
-      console.error("Error solicitando cambio de contraseña:", err)
+      logger.error("Error solicitando cambio de contraseña:", err)
       setError(err instanceof Error ? err.message : "Error al solicitar cambio de contraseña")
     } finally {
       setIsSendingPasswordReset(false)

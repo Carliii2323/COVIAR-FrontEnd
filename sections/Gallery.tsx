@@ -62,7 +62,7 @@ export default function Gallery() {
         <div className="flex justify-center w-full">
           <Carousel
             plugins={[
-              Autoplay({ delay: 4000, stopOnInteraction: false }) as any
+              Autoplay({ delay: 4000, stopOnInteraction: false })
             ]}
             className="w-full"
             opts={{

@@ -1,3 +1,4 @@
+import { logger } from '@/lib/utils/logger'
 import type { ResultadoDetallado } from "@/lib/api/types"
 
 const STORAGE_KEY = 'historial_local'
@@ -15,7 +16,7 @@ export function saveResultToLocalHistory(result: ResultadoDetallado): void {
             try {
                 history = JSON.parse(currentHistoryStr)
             } catch (e) {
-                console.error("Error parsing local history:", e)
+                logger.error("Error parsing local history:", e)
                 history = []
             }
         }
@@ -34,7 +35,7 @@ export function saveResultToLocalHistory(result: ResultadoDetallado): void {
 
         localStorage.setItem(STORAGE_KEY, JSON.stringify(history))
     } catch (error) {
-        console.error("Error saving to local history:", error)
+        logger.error("Error saving to local history:", error)
     }
 }
 
@@ -56,7 +57,7 @@ export function getLatestResultFromLocal(): ResultadoDetallado | null {
             new Date(b.autoevaluacion.fecha_inicio).getTime() - new Date(a.autoevaluacion.fecha_inicio).getTime()
         )[0]
     } catch (error) {
-        console.error("Error retrieving latest result from local:", error)
+        logger.error("Error retrieving latest result from local:", error)
         return null
     }
 }
@@ -76,7 +77,7 @@ export function getLocalHistory(): ResultadoDetallado[] {
             new Date(b.autoevaluacion.fecha_inicio).getTime() - new Date(a.autoevaluacion.fecha_inicio).getTime()
         )
     } catch (error) {
-        console.error("Error retrieving local history:", error)
+        logger.error("Error retrieving local history:", error)
         return []
     }
 }
