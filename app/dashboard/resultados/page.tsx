@@ -1,4 +1,5 @@
 "use client"
+import { logger } from "@/lib/utils/logger"
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
@@ -162,7 +163,7 @@ interface PuntoComparativa {
 
 // ─── Tooltip personalizado para el gráfico comparativo ────────────────────────
 
-function ComparativaTooltip({ active, payload }: { active?: boolean; payload?: any[] }) {
+function ComparativaTooltip({ active, payload }: { active?: boolean; payload?: Array<{ payload: PuntoComparativa }> }) {
     if (active && payload?.length) {
         const data = payload[0].payload as PuntoComparativa
         return (
@@ -334,7 +335,7 @@ function ComparativaChart({
                                 dataKey="puntaje"
                                 stroke="#880D1E"
                                 strokeWidth={2.5}
-                                dot={(props: any) => {
+                                dot={(props: { cx: number; cy: number; index: number }) => {
                                     const { cx, cy, index } = props
                                     return (
                                         <circle
@@ -408,7 +409,7 @@ function LocalChapterCard({ capitulo, idAutoevaluacion }: { capitulo: CapituloLo
 
     const handleOpenDownloadModal = (idIndicador: number, idRespuesta: number, nombreIndicador: string) => {
         if (!idRespuesta || !idAutoevaluacion) {
-            console.error('Error: ID de respuesta o autoevaluación no válido')
+            logger.error('Error: ID de respuesta o autoevaluación no válido')
             alert('No se pudo descargar la evidencia. Información incompleta.')
             return
         }
@@ -426,7 +427,7 @@ function LocalChapterCard({ capitulo, idAutoevaluacion }: { capitulo: CapituloLo
         try {
             await descargarEvidencia(idAutoevaluacion, idRespuesta)
         } catch (error) {
-            console.error('Error al descargar evidencia:', error)
+            logger.error('Error al descargar evidencia:', error)
             const errorMessage = error instanceof Error 
                 ? error.message 
                 : 'Error desconocido al descargar la evidencia'
@@ -824,11 +825,11 @@ export default function ResultadosPage() {
                 const resultadosDetallados = await obtenerResultadosAutoevaluacion(ultimaEvaluacion.id_autoevaluacion)
                 
                 // Debug: ver qué datos llegan del backend
-                console.log('📊 Datos completos del backend:', resultadosDetallados)
+                logger.log('📊 Datos completos del backend:', resultadosDetallados)
                 if (resultadosDetallados.capitulos && resultadosDetallados.capitulos[0]) {
-                    console.log('📋 Ejemplo de capítulo:', resultadosDetallados.capitulos[0])
+                    logger.log('📋 Ejemplo de capítulo:', resultadosDetallados.capitulos[0])
                     if (resultadosDetallados.capitulos[0].indicadores && resultadosDetallados.capitulos[0].indicadores[0]) {
-                        console.log('📌 Ejemplo de indicador:', resultadosDetallados.capitulos[0].indicadores[0])
+                        logger.log('📌 Ejemplo de indicador:', resultadosDetallados.capitulos[0].indicadores[0])
                     }
                 }
 
@@ -856,25 +857,23 @@ export default function ResultadosPage() {
                             indicadores_total: cap.indicadores_total || 0,
                             // Mapear indicadores con evidencias si están disponibles
                             indicadores: cap.indicadores?.map(ind => {
-                                const indicadorAny = ind as any
                                 const indicadorFormateado = {
                                     id_indicador: ind.id_indicador,
                                     nombre: ind.nombre,
                                     descripcion: ind.descripcion,
                                     orden: ind.orden,
                                     respuesta: {
-                                        id_nivel_respuesta: indicadorAny.id_nivel_respuesta || 0,
+                                        id_nivel_respuesta: ind.id_nivel_respuesta || 0,
                                         nombre: ind.respuesta_nombre || '',
                                         descripcion: ind.respuesta_descripcion || '',
                                         puntos: ind.respuesta_puntos || 0
                                     },
                                     puntaje_maximo: ind.puntaje_maximo,
-                                    // Incluir campos de evidencia - probar diferentes nombres de propiedades que el backend podría usar
-                                    id_respuesta: indicadorAny.id_respuesta || indicadorAny.idRespuesta || indicadorAny.respuesta_id,
-                                    tiene_evidencia: indicadorAny.tiene_evidencia || indicadorAny.tieneEvidencia || false,
-                                    nombre_archivo_evidencia: indicadorAny.nombre_archivo_evidencia || indicadorAny.nombreArchivoEvidencia || indicadorAny.archivo_evidencia
+                                    id_respuesta: ind.id_respuesta,
+                                    tiene_evidencia: ind.tiene_evidencia || false,
+                                    nombre_archivo_evidencia: ind.nombre_archivo_evidencia
                                 }
-                                console.log(`📝 Indicador mapeado "${ind.nombre}":`, indicadorFormateado)
+                                logger.log(`📝 Indicador mapeado "${ind.nombre}":`, indicadorFormateado)
                                 return indicadorFormateado
                             }) || []
                         }
@@ -887,19 +886,19 @@ export default function ResultadosPage() {
                 try {
                     localStorage.setItem('ultimo_resultado_completado', JSON.stringify(resultadoFormateado))
                 } catch (e) {
-                    console.error('Error al guardar resultado en localStorage:', e)
+                    logger.error('Error al guardar resultado en localStorage:', e)
                 }
 
                 setResultadoLocal(resultadoFormateado)
 
                 // Construir historial comparativo desde el historial completo
                 const puntos = historial
-                    .filter((ev: any) => ev.puntaje_final != null)
-                    .sort((a: any, b: any) =>
+                    .filter((ev) => ev.puntaje_final != null)
+                    .sort((a, b) =>
                         new Date(a.fecha_finalizacion || a.fecha_inicio).getTime() -
                         new Date(b.fecha_finalizacion || b.fecha_inicio).getTime()
                     )
-                    .map((ev: any) => ({
+                    .map((ev) => ({
                         fecha: ev.fecha_finalizacion || ev.fecha_inicio,
                         puntaje: ev.puntaje_final || 0,
                         nivel: ev.nivel_sostenibilidad?.nombre || 'N/A',
@@ -908,7 +907,7 @@ export default function ResultadosPage() {
                 setHistorialComparativa(puntos)
 
             } catch (err) {
-                console.error('Error al cargar resultados:', err)
+                logger.error('Error al cargar resultados:', err)
                 setError(err instanceof Error ? err.message : 'Error desconocido al cargar resultados')
             } finally {
                 setIsLoading(false)
@@ -931,12 +930,12 @@ export default function ResultadosPage() {
                 if (!historial || historial.length === 0) return
 
                 const puntos = historial
-                    .filter((ev: any) => ev.puntaje_final != null)
-                    .sort((a: any, b: any) =>
+                    .filter((ev) => ev.puntaje_final != null)
+                    .sort((a, b) =>
                         new Date(a.fecha_finalizacion || a.fecha_inicio).getTime() -
                         new Date(b.fecha_finalizacion || b.fecha_inicio).getTime()
                     )
-                    .map((ev: any) => ({
+                    .map((ev) => ({
                         fecha: ev.fecha_finalizacion || ev.fecha_inicio,
                         puntaje: ev.puntaje_final || 0,
                         nivel: ev.nivel_sostenibilidad?.nombre || 'N/A',
@@ -944,7 +943,7 @@ export default function ResultadosPage() {
 
                 setHistorialComparativa(puntos)
             } catch (e) {
-                console.error('Error al cargar historial comparativo:', e)
+                logger.error('Error al cargar historial comparativo:', e)
             }
         }
 

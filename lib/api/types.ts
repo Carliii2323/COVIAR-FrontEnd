@@ -35,6 +35,24 @@ export interface Usuario {
 
 // ============= AUTENTICACIÓN =============
 
+export interface LoginData {
+  tipo: string
+  bodega: {
+    id_bodega: number
+    nombre_fantasia: string
+    razon_social: string
+    [key: string]: unknown
+  }
+  responsable: {
+    nombre: string
+    apellido: string
+    cargo: string
+    dni?: string
+    [key: string]: unknown
+  }
+  cuenta?: Record<string, unknown>
+}
+
 export interface LoginRequest {
   email_login: string
   password: string
@@ -171,6 +189,8 @@ export interface ResultadoIndicadorDetalle {
   puntaje_maximo: number
   id_respuesta?: number | null
   tiene_evidencia?: boolean
+  id_nivel_respuesta?: number
+  nombre_archivo_evidencia?: string | null
 }
 
 export interface ResultadoCapitulo {

@@ -1,3 +1,4 @@
+import { logger } from '@/lib/utils/logger'
 import { NextRequest, NextResponse } from 'next/server'
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
@@ -41,17 +42,17 @@ export async function POST(
         const data = await response.json().catch(() => ({}))
 
         if (!response.ok) {
-            console.error('Proxy: Error al subir evidencia:', response.status, data)
+            logger.error('Proxy: Error al subir evidencia:', response.status, data)
             return NextResponse.json(
                 { message: data.message || `Error ${response.status}: ${response.statusText}` },
                 { status: response.status }
             )
         }
 
-        console.log('Proxy: Evidencia subida exitosamente')
+        logger.log('Proxy: Evidencia subida exitosamente')
         return NextResponse.json(data, { status: response.status })
     } catch (error) {
-        console.error('Proxy: Error de conexión al subir evidencia:', error)
+        logger.error('Proxy: Error de conexión al subir evidencia:', error)
         return NextResponse.json(
             { message: 'No se pudo conectar con el servidor backend' },
             { status: 503 }
@@ -109,7 +110,7 @@ export async function GET(
 
         return NextResponse.json(data)
     } catch (error) {
-        console.error('Proxy: Error de conexión al obtener evidencias:', error)
+        logger.error('Proxy: Error de conexión al obtener evidencias:', error)
         return NextResponse.json(
             { message: 'No se pudo conectar con el servidor backend' },
             { status: 503 }
@@ -167,7 +168,7 @@ export async function DELETE(
 
         return NextResponse.json(data)
     } catch (error) {
-        console.error('Proxy: Error de conexión al eliminar evidencia:', error)
+        logger.error('Proxy: Error de conexión al eliminar evidencia:', error)
         return NextResponse.json(
             { message: 'No se pudo conectar con el servidor backend' },
             { status: 503 }

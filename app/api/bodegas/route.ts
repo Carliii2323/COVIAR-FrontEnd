@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { getClientIp } from '@/lib/utils/client-ip'
+import { logger } from '@/lib/utils/logger'
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
 
@@ -21,6 +23,7 @@ export async function GET(request: NextRequest) {
 
         if (authHeader) {
             headers['Authorization'] = authHeader
+        headers['X-Forwarded-For'] = getClientIp(request)
         }
 
         const response = await fetch(`${API_BASE_URL}/api/admin/bodegas`, {
@@ -32,7 +35,7 @@ export async function GET(request: NextRequest) {
         const data = await response.json().catch(() => [])
 
         if (!response.ok) {
-            console.error('Proxy: Error al obtener bodegas:', response.status, data)
+            logger.error('Proxy: Error al obtener bodegas:', response.status, data)
             return NextResponse.json(
                 { message: data.message || `Error ${response.status}: ${response.statusText}` },
                 { status: response.status }
@@ -41,7 +44,7 @@ export async function GET(request: NextRequest) {
 
         return NextResponse.json(data, { status: 200 })
     } catch (error) {
-        console.error('Proxy: Error de conexión al obtener bodegas:', error)
+        logger.error('Proxy: Error de conexión al obtener bodegas:', error)
         return NextResponse.json(
             { message: 'No se pudo conectar con el servidor backend' },
             { status: 503 }

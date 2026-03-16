@@ -1,6 +1,7 @@
 ﻿"use client"
 
 import type React from "react"
+import { logger } from "@/lib/utils/logger"
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
@@ -12,6 +13,7 @@ import Link from "next/link"
 import { ArrowLeft, Eye, EyeOff, CheckCircle2, XCircle } from "lucide-react"
 import Image from "next/image"
 import { registrarBodega } from "@/lib/api/auth"
+import { getErrorMessage } from "@/lib/utils/errors"
 import {
   getProvincias,
   getDepartamentosPorProvincia,
@@ -250,7 +252,7 @@ export default function RegistroPage() {
           setProvincias(data)
         }
       } catch (err) {
-        console.error("Error cargando provincias:", err)
+        logger.error("Error cargando provincias:", err)
       } finally {
         if (isMounted) {
           setLoadingProvincias(false)
@@ -281,7 +283,7 @@ export default function RegistroPage() {
           setDepartamentos(data)
         })
         .catch((err) => {
-          console.error("Error cargando departamentos:", err)
+          logger.error("Error cargando departamentos:", err)
           setDepartamentos([])
         })
         .finally(() => {
@@ -304,7 +306,7 @@ export default function RegistroPage() {
           setLocalidades(data)
         })
         .catch((err) => {
-          console.error("Error cargando localidades:", err)
+          logger.error("Error cargando localidades:", err)
           setLocalidades([])
         })
         .finally(() => {
@@ -356,22 +358,22 @@ export default function RegistroPage() {
       await registrarBodega(registroData)
       router.push("/registro-exitoso")
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : "Ocurrio un error al registrar la bodega"
+      const errorMessage = err instanceof Error ? err.message : ""
       const errorLower = errorMessage.toLowerCase()
-      
+
       // Detectar si es error de email duplicado
       if (errorLower.includes("email") && errorLower.includes("registrado")) {
         setFieldErrors(prev => ({ ...prev, emailLogin: "Este email ya está registrado" }))
         setTouched(prev => ({ ...prev, emailLogin: true }))
         setError("El email ingresado ya se encuentra registrado en el sistema. Por favor, utilice otro email o inicie sesión.")
-      } 
+      }
       // Detectar si es error de CUIT duplicado
       else if (errorLower.includes("cuit") && errorLower.includes("registrado")) {
         setFieldErrors(prev => ({ ...prev, cuit: "Este CUIT ya está registrado" }))
         setTouched(prev => ({ ...prev, cuit: true }))
         setError("El CUIT ingresado ya se encuentra registrado en el sistema. Por favor, verifique los datos.")
       } else {
-        setError(errorMessage)
+        setError(getErrorMessage(err))
       }
     } finally {
       setIsLoading(false)

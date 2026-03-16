@@ -1,5 +1,6 @@
 // lib/api/autoevaluacion.ts
 
+import { logger } from '@/lib/utils/logger'
 import type { EstructuraAutoevaluacionResponse, Segmento, CrearAutoevaluacionResponse, RespuestaIndicador, RespuestaGuardada, AutoevaluacionHistorial, ResultadoDetallado, ResultadosAutoevaluacionResponse, EvidenciaResponse, Evidencia } from './types'
 
 /**
@@ -175,7 +176,7 @@ export async function guardarRespuestaIndividual(
     const data = await response.json().catch(() => ({}))
 
     if (!response.ok) {
-        console.warn('guardarRespuestaIndividual: Error', response.status, data)
+        logger.warn('guardarRespuestaIndividual: Error', response.status, data)
         return null
     }
 
@@ -337,7 +338,7 @@ export async function subirEvidencia(
     // No setear Content-Type: el navegador lo genera con el boundary correcto
 
     const url = `/api/autoevaluaciones/${idAutoevaluacion}/respuestas/${idRespuesta}/evidencias`
-    console.log(`subirEvidencia: POST ${url} (archivo: ${archivo.name}, ${(archivo.size / 1024).toFixed(1)} KB)`)
+    logger.log(`subirEvidencia: POST ${url} (archivo: ${archivo.name}, ${(archivo.size / 1024).toFixed(1)} KB)`)
 
     const response = await fetch(url, {
         method: 'POST',
@@ -349,11 +350,11 @@ export async function subirEvidencia(
     const data = await response.json().catch(() => ({}))
 
     if (!response.ok) {
-        console.error('subirEvidencia: Error', response.status, JSON.stringify(data))
+        logger.error('subirEvidencia: Error', response.status, JSON.stringify(data))
         throw new Error(data?.message || data?.error || `Error ${response.status}: ${response.statusText}`)
     }
 
-    console.log('subirEvidencia: Éxito', JSON.stringify(data))
+    logger.log('subirEvidencia: Éxito', JSON.stringify(data))
     return data as EvidenciaResponse
 }
 
@@ -368,7 +369,7 @@ export async function obtenerEvidencia(
     idRespuesta: number
 ): Promise<Evidencia | null> {
     const url = `/api/autoevaluaciones/${idAutoevaluacion}/respuestas/${idRespuesta}/evidencia`
-    console.log(`📋 obtenerEvidencia: GET ${url}`)
+    logger.log(`📋 obtenerEvidencia: GET ${url}`)
 
     const response = await fetch(url, {
         method: 'GET',
@@ -380,14 +381,14 @@ export async function obtenerEvidencia(
 
     if (!response.ok) {
         if (response.status === 404) {
-            console.log(`ℹ️ No hay evidencia para respuesta ${idRespuesta} (404)`)
+            logger.log(`ℹ️ No hay evidencia para respuesta ${idRespuesta} (404)`)
             return null
         }
-        console.error(`❌ obtenerEvidencia: Error ${response.status}`, data)
+        logger.error(`❌ obtenerEvidencia: Error ${response.status}`, data)
         throw new Error(data?.message || `Error ${response.status}: ${response.statusText}`)
     }
 
-    console.log(`📦 obtenerEvidencia: Respuesta recibida`, JSON.stringify(data))
+    logger.log(`📦 obtenerEvidencia: Respuesta recibida`, JSON.stringify(data))
 
     // La API puede devolver un objeto con evidencia en data.evidencia
     if (data.evidencia) {
@@ -396,7 +397,7 @@ export async function obtenerEvidencia(
         if (evidencia.nombre && !evidencia.nombre_archivo) {
             evidencia.nombre_archivo = evidencia.nombre
         }
-        console.log(`✅ Evidencia encontrada en data.evidencia:`, evidencia.nombre_archivo || evidencia.nombre)
+        logger.log(`✅ Evidencia encontrada en data.evidencia:`, evidencia.nombre_archivo || evidencia.nombre)
         return evidencia as Evidencia
     }
     if (data.nombre_archivo || data.nombre) {
@@ -404,12 +405,12 @@ export async function obtenerEvidencia(
         if (data.nombre && !data.nombre_archivo) {
             data.nombre_archivo = data.nombre
         }
-        console.log(`✅ Evidencia encontrada directamente en data:`, data.nombre_archivo)
+        logger.log(`✅ Evidencia encontrada directamente en data:`, data.nombre_archivo)
         return data as Evidencia
     }
 
-    console.warn(`⚠️ obtenerEvidencia: Estructura de respuesta no reconocida. Keys:`, Object.keys(data))
-    console.warn(`⚠️ Datos completos:`, JSON.stringify(data))
+    logger.warn(`⚠️ obtenerEvidencia: Estructura de respuesta no reconocida. Keys:`, Object.keys(data))
+    logger.warn(`⚠️ Datos completos:`, JSON.stringify(data))
     return null
 }
 
@@ -424,7 +425,7 @@ export async function obtenerEvidenciaPorIndicador(
     idIndicador: number
 ): Promise<Evidencia | null> {
     const url = `/api/autoevaluaciones/${idAutoevaluacion}/evidencias?id_indicador=${idIndicador}`
-    console.log(`📋 obtenerEvidenciaPorIndicador: GET ${url}`)
+    logger.log(`📋 obtenerEvidenciaPorIndicador: GET ${url}`)
 
     const response = await fetch(url, {
         method: 'GET',
@@ -436,14 +437,14 @@ export async function obtenerEvidenciaPorIndicador(
 
     if (!response.ok) {
         if (response.status === 404) {
-            console.log(`ℹ️ No hay evidencia para indicador ${idIndicador} (404)`)
+            logger.log(`ℹ️ No hay evidencia para indicador ${idIndicador} (404)`)
             return null
         }
-        console.error(`❌ obtenerEvidenciaPorIndicador: Error ${response.status}`, data)
+        logger.error(`❌ obtenerEvidenciaPorIndicador: Error ${response.status}`, data)
         throw new Error(data?.message || `Error ${response.status}: ${response.statusText}`)
     }
 
-    console.log(`📦 obtenerEvidenciaPorIndicador: Respuesta recibida`, JSON.stringify(data))
+    logger.log(`📦 obtenerEvidenciaPorIndicador: Respuesta recibida`, JSON.stringify(data))
 
     // Procesar la respuesta similar a obtenerEvidencia
     if (data.evidencia) {
@@ -451,22 +452,22 @@ export async function obtenerEvidenciaPorIndicador(
         if (evidencia.nombre && !evidencia.nombre_archivo) {
             evidencia.nombre_archivo = evidencia.nombre
         }
-        console.log(`✅ Evidencia encontrada (id_respuesta: ${evidencia.id_respuesta}):`, evidencia.nombre_archivo || evidencia.nombre)
+        logger.log(`✅ Evidencia encontrada (id_respuesta: ${evidencia.id_respuesta}):`, evidencia.nombre_archivo || evidencia.nombre)
         return evidencia as Evidencia
     }
     if (Array.isArray(data.evidencias) && data.evidencias.length > 0) {
-        console.warn(`⚠️ API retornó un array de evidencias general al solicitar por indicador ${idIndicador}. Bloqueado para evitar clonación visual.`)
+        logger.warn(`⚠️ API retornó un array de evidencias general al solicitar por indicador ${idIndicador}. Bloqueado para evitar clonación visual.`)
         return null
     }
     if (data.nombre_archivo || data.nombre) {
         if (data.nombre && !data.nombre_archivo) {
             data.nombre_archivo = data.nombre
         }
-        console.log(`✅ Evidencia encontrada (id_respuesta: ${data.id_respuesta}):`, data.nombre_archivo)
+        logger.log(`✅ Evidencia encontrada (id_respuesta: ${data.id_respuesta}):`, data.nombre_archivo)
         return data as Evidencia
     }
 
-    console.log(`ℹ️ No se encontró evidencia para indicador ${idIndicador}`)
+    logger.log(`ℹ️ No se encontró evidencia para indicador ${idIndicador}`)
     return null
 }
 
@@ -480,7 +481,7 @@ export async function eliminarEvidencia(
     idRespuesta: number
 ): Promise<void> {
     const url = `/api/autoevaluaciones/${idAutoevaluacion}/respuestas/${idRespuesta}/evidencia`
-    console.log(`eliminarEvidencia: DELETE ${url}`)
+    logger.log(`eliminarEvidencia: DELETE ${url}`)
 
     const response = await fetch(url, {
         method: 'DELETE',
@@ -491,11 +492,11 @@ export async function eliminarEvidencia(
     const data = await response.json().catch(() => ({}))
 
     if (!response.ok) {
-        console.error('eliminarEvidencia: Error', response.status, JSON.stringify(data))
+        logger.error('eliminarEvidencia: Error', response.status, JSON.stringify(data))
         throw new Error(data?.message || `Error ${response.status}: ${response.statusText}`)
     }
 
-    console.log('eliminarEvidencia: Éxito')
+    logger.log('eliminarEvidencia: Éxito')
 }
 
 /**
@@ -515,7 +516,7 @@ export async function descargarEvidencia(
     }
 
     const url = `/api/autoevaluaciones/${idAutoevaluacion}/respuestas/${idRespuesta}/evidencia/descargar`
-    console.log(`descargarEvidencia: GET ${url}`)
+    logger.log(`descargarEvidencia: GET ${url}`)
 
     const response = await fetch(url, {
         method: 'GET',
@@ -525,7 +526,7 @@ export async function descargarEvidencia(
 
     if (!response.ok) {
         const data = await response.json().catch(() => ({}))
-        console.error('descargarEvidencia: Error', response.status, JSON.stringify(data))
+        logger.error('descargarEvidencia: Error', response.status, JSON.stringify(data))
         throw new Error(data?.message || `Error ${response.status}: No se pudo descargar la evidencia`)
     }
 
@@ -557,6 +558,6 @@ export async function descargarEvidencia(
     // Limpiar el URL temporal
     setTimeout(() => window.URL.revokeObjectURL(blobUrl), 100)
 
-    console.log('descargarEvidencia: Descarga iniciada', filename)
+    logger.log('descargarEvidencia: Descarga iniciada', filename)
 }
 

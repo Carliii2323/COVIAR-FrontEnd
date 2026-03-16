@@ -1,4 +1,5 @@
 "use client"
+import { logger } from "@/lib/utils/logger"
 
 import type React from "react"
 import { useRouter, usePathname } from "next/navigation"
@@ -29,22 +30,22 @@ export default function DashboardLayout({
 
     if (!usuarioStr) {
       // No hay usuario, redirigir a login
-      console.log('No hay usuario en localStorage, redirigiendo a login')
+      logger.log('No hay usuario en localStorage, redirigiendo a login')
       router.push("/login")
       return
     }
 
     // Si es administrador, redirigir a /admin
     if (tipoCuenta === 'ADMINISTRADOR_APP') {
-      console.log('Usuario es administrador, redirigiendo a /admin')
+      logger.log('Usuario es administrador, redirigiendo a /admin')
       router.push("/admin")
       return
     }
 
     try {
       const usuario = JSON.parse(usuarioStr)
-      console.log('Usuario encontrado en localStorage:', usuario)
-      console.log('Estructura del usuario:', JSON.stringify(usuario, null, 2))
+      logger.log('Usuario encontrado en localStorage:', usuario)
+      logger.log('Estructura del usuario:', JSON.stringify(usuario, null, 2))
 
       // Verificar que el objeto tiene las propiedades necesarias
       // Soportar multiples formatos de respuesta del backend
@@ -58,18 +59,18 @@ export default function DashboardLayout({
       )
 
       if (!hasValidStructure) {
-        console.log('Usuario inválido (sin estructura válida), limpiando localStorage')
-        console.log('Propiedades del usuario:', Object.keys(usuario))
+        logger.log('Usuario inválido (sin estructura válida), limpiando localStorage')
+        logger.log('Propiedades del usuario:', Object.keys(usuario))
         localStorage.removeItem('usuario')
         router.push("/login")
         return
       }
 
-      console.log('Usuario válido, permitiendo acceso al dashboard')
+      logger.log('Usuario válido, permitiendo acceso al dashboard')
       setIsLoading(false)
     } catch (error) {
       // Error al parsear, limpiar y redirigir
-      console.error('Error al parsear usuario de localStorage:', error)
+      logger.error('Error al parsear usuario de localStorage:', error)
       localStorage.removeItem('usuario')
       router.push("/login")
     }

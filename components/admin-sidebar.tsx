@@ -1,4 +1,5 @@
 "use client"
+import { logger } from "@/lib/utils/logger"
 
 import { Home, Users, BarChart3, Settings, LogOut } from "lucide-react"
 import Link from "next/link"
@@ -6,6 +7,7 @@ import { usePathname, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
+import type { LoginData } from "@/lib/api/types"
 
 const navigation = [
   { name: "Inicio", href: "/admin", icon: Home },
@@ -20,7 +22,7 @@ const bottomNavigation = [
 export function AdminSidebar() {
   const pathname = usePathname()
   const router = useRouter()
-  const [usuario, setUsuario] = useState<any>(null)
+  const [usuario, setUsuario] = useState<LoginData | null>(null)
 
   useEffect(() => {
     const usuarioStr = localStorage.getItem('usuario')
@@ -29,7 +31,7 @@ export function AdminSidebar() {
         const parsedUsuario = JSON.parse(usuarioStr)
         setUsuario(parsedUsuario)
       } catch (error) {
-        console.error('Error al parsear usuario:', error)
+        logger.error('Error al parsear usuario:', error)
       }
     }
   }, [])

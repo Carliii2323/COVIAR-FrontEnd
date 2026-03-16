@@ -1,3 +1,5 @@
+import { logger } from '@/lib/utils/logger'
+import { getClientIp } from '@/lib/utils/client-ip'
 import { NextRequest, NextResponse } from 'next/server'
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
@@ -7,7 +9,7 @@ export async function POST(request: NextRequest) {
     const cookieOptions = 'Path=/; Max-Age=0; HttpOnly; SameSite=Lax'
 
     try {
-        console.log('Proxy Logout: Enviando logout a', `${API_BASE_URL}/api/logout`)
+        logger.log('Proxy Logout: Enviando logout a', `${API_BASE_URL}/api/logout`)
 
         const cookies = request.headers.get('Cookie')
         const headers: HeadersInit = {
@@ -15,6 +17,7 @@ export async function POST(request: NextRequest) {
         }
         if (cookies) {
             headers['Cookie'] = cookies
+        headers['X-Forwarded-For'] = getClientIp(request)
         }
 
         const response = await fetch(`${API_BASE_URL}/api/logout`, {
@@ -41,10 +44,10 @@ export async function POST(request: NextRequest) {
             nextResponse.headers.append('set-cookie', `refresh_token=; ${cookieOptions}`)
         }
 
-        console.log('Proxy Logout: Logout exitoso, cookies eliminadas')
+        logger.log('Proxy Logout: Logout exitoso, cookies eliminadas')
         return nextResponse
     } catch (error) {
-        console.error('Proxy Logout: Error de conexión:', error)
+        logger.error('Proxy Logout: Error de conexión:', error)
 
         // Aunque falle el backend, eliminar las cookies del navegador
         const nextResponse = NextResponse.json(

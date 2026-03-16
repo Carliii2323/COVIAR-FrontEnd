@@ -5,6 +5,7 @@ import type React from "react"
 import { useState, useEffect, Suspense } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
 import { restablecerPassword } from "@/lib/api/auth"
+import { getErrorMessage } from "@/lib/utils/errors"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -64,7 +65,7 @@ function ActualizarContrasenaContent() {
         router.push("/login")
       }, 3000)
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Ocurrió un error al actualizar la contraseña")
+      setError(getErrorMessage(err))
     } finally {
       setIsLoading(false)
     }

@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { logger } from "@/lib/utils/logger"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
@@ -48,7 +49,7 @@ export default function DashboardPage() {
         const user = JSON.parse(usuarioStr)
         setUsuario(user)
       } catch (error) {
-        console.error('Error al parsear usuario:', error)
+        logger.error('Error al parsear usuario:', error)
       }
     }
   }, [])

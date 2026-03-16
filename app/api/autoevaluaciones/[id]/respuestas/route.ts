@@ -1,3 +1,4 @@
+import { logger } from '@/lib/utils/logger'
 import { NextRequest, NextResponse } from 'next/server'
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
@@ -14,7 +15,7 @@ export async function POST(
         const { id } = await params
         const body = await request.json()
 
-        console.log('Proxy: Guardando respuestas para autoevaluación', id, body)
+        logger.log('Proxy: Guardando respuestas para autoevaluación', id, body)
 
         const cookies = request.headers.get('Cookie')
         const authHeader = request.headers.get('Authorization')
@@ -43,7 +44,7 @@ export async function POST(
         const data = await response.json().catch(() => ({}))
 
         if (!response.ok) {
-            console.error('Proxy: Error al guardar respuestas:', response.status, data)
+            logger.error('Proxy: Error al guardar respuestas:', response.status, data)
             return NextResponse.json(
                 { message: data.message || `Error ${response.status}: ${response.statusText}` },
                 { status: response.status }
@@ -52,7 +53,7 @@ export async function POST(
 
         return NextResponse.json(data)
     } catch (error) {
-        console.error('Proxy: Error de conexión:', error)
+        logger.error('Proxy: Error de conexión:', error)
         return NextResponse.json(
             { message: 'No se pudo conectar con el servidor backend' },
             { status: 503 }

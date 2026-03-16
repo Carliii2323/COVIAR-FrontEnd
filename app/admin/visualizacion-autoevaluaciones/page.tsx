@@ -1,4 +1,5 @@
 "use client"
+import { logger } from "@/lib/utils/logger"
 
 import { useEffect, useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -65,7 +66,7 @@ export default function GestionAutoevaluacionPage() {
       setFilteredEvaluaciones(data)
       setCurrentPage(1) // Resetear a página 1 cuando cambia el estado
     } catch (err) {
-      console.error('Error al cargar evaluaciones:', err)
+      logger.error('Error al cargar evaluaciones:', err)
       setError(err instanceof Error ? err.message : 'Error al cargar evaluaciones')
     } finally {
       setIsLoading(false)
@@ -105,7 +106,7 @@ export default function GestionAutoevaluacionPage() {
         }
       )
     } catch (err) {
-      console.error('Error al descargar PDF:', err)
+      logger.error('Error al descargar PDF:', err)
       setError(err instanceof Error ? err.message : 'Error al descargar PDF')
     } finally {
       setDownloadingId(null)
