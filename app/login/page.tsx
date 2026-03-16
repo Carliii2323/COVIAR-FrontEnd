@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { Eye, EyeOff, ArrowLeft } from "lucide-react"
 import { loginUsuario } from "@/lib/api/auth"
+import { getErrorMessage } from "@/lib/utils/errors"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
@@ -55,14 +56,7 @@ export default function LoginPage() {
       }
     } catch (error: unknown) {
       logger.error('Error en login:', error)
-      const errorMessage = error instanceof Error ? error.message : "Ocurrió un error al iniciar sesión"
-
-      // Personalizar mensaje para error de credenciales incorrectas
-      if (errorMessage.includes("401") || errorMessage.includes("Unauthorized")) {
-        setError("Su email o contraseña no coinciden")
-      } else {
-        setError(errorMessage)
-      }
+      setError(getErrorMessage(error))
     } finally {
       setIsLoading(false)
     }
