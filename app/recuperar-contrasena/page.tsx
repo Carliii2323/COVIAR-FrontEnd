@@ -4,6 +4,7 @@ import type React from "react"
 
 import { useState } from "react"
 import { solicitarRestablecimientoPassword } from "@/lib/api/auth"
+import { getErrorMessage } from "@/lib/utils/errors"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -28,7 +29,7 @@ export default function RecuperarContrasenaPage() {
       await solicitarRestablecimientoPassword(email)
       setMessage("Se ha enviado un correo con instrucciones para recuperar tu contraseña")
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Ocurrió un error al solicitar el restablecimiento")
+      setError(getErrorMessage(err))
     } finally {
       setIsLoading(false)
     }
