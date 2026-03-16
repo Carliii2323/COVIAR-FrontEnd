@@ -80,7 +80,7 @@ export function SegmentConfirmationModal({
 
     return (
         <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
-            <DialogContent className="sm:max-w-2xl p-0 overflow-hidden border-0 shadow-2xl">
+            <DialogContent className="sm:max-w-2xl p-0 overflow-hidden border-0 shadow-2xl max-h-[90vh] flex flex-col">
                 {/* Header con diseño premium */}
                 <div className="relative bg-[#880D1E] text-white p-6 shrink-0 overflow-hidden">
                     {/* Elementos decorativos de fondo */}
@@ -104,8 +104,8 @@ export function SegmentConfirmationModal({
                 </div>
 
                 {/* Contenido Principal */}
-                <div className="bg-white -mt-4 rounded-t-3xl shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)]">
-                    <div className="px-4 sm:px-8 py-6">
+                <div className="bg-white -mt-4 rounded-t-3xl shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] flex-1 overflow-hidden flex flex-col">
+                    <div className="px-4 sm:px-8 py-6 overflow-y-auto">
                         {/* Página de Resumen */}
                         {currentPage === 0 && (
                             <div className="space-y-6">
@@ -227,7 +227,7 @@ export function SegmentConfirmationModal({
                     </div>
 
                     {/* Indicadores de página */}
-                    <div className="flex justify-center gap-1.5 pb-4">
+                    <div className="flex justify-center gap-1.5 pb-4 shrink-0 bg-white pt-2">
                         {Array.from({ length: totalPages }).map((_, idx) => (
                             <button
                                 key={idx}
@@ -242,7 +242,7 @@ export function SegmentConfirmationModal({
                         ))}
                     </div>
 
-                    <DialogFooter className="p-6 pt-2 border-t border-gray-100 bg-white">
+                    <DialogFooter className="p-6 pt-2 border-t border-gray-100 bg-white shrink-0">
                         <div className="flex w-full gap-3">
                             {/* Botón Anterior */}
                             {!isFirstPage && (
