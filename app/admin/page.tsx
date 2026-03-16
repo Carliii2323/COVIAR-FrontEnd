@@ -1,4 +1,5 @@
 "use client"
+import { logger } from "@/lib/utils/logger"
 
 import { useEffect, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -28,9 +29,17 @@ const NIVEL_COLOR: Record<string, string> = {
 
 // SegmentoDistribucion is imported from admin.ts
 
+// ─── Tipos para tooltips de Recharts ──────────────────────────────────────────
+
+interface RechartsTooltipEntry {
+  value: number
+  name: string
+  payload: { name: string; value: number }
+}
+
 // ─── Tooltip personalizado para el BarChart ────────────────────────────────────
 
-function BarTooltip({ active, payload }: { active?: boolean; payload?: any[] }) {
+function BarTooltip({ active, payload }: { active?: boolean; payload?: RechartsTooltipEntry[] }) {
   if (active && payload?.length) {
     const { value, payload: data } = payload[0]
     return (
@@ -45,7 +54,7 @@ function BarTooltip({ active, payload }: { active?: boolean; payload?: any[] }) 
 
 // ─── Tooltip personalizado para el PieChart general ───────────────────────────
 
-function CustomTooltip({ active, payload }: { active?: boolean; payload?: any[] }) {
+function CustomTooltip({ active, payload }: { active?: boolean; payload?: RechartsTooltipEntry[] }) {
   if (active && payload?.length && payload[0].name !== "Resto") {
     return (
       <div className="bg-white border border-gray-200 rounded-lg shadow-lg px-3 py-2 text-xs">
@@ -72,7 +81,7 @@ export default function AdminDashboard() {
         const data = await getAdminStats()
         setStats(data)
       } catch (err) {
-        console.error("Error al cargar estadísticas:", err)
+        logger.error("Error al cargar estadísticas:", err)
         setError(err instanceof Error ? err.message : "Error al cargar estadísticas")
       } finally {
         setIsLoading(false)

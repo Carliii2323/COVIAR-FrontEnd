@@ -1,3 +1,5 @@
+import { logger } from '@/lib/utils/logger'
+import { getClientIp } from '@/lib/utils/client-ip'
 import { NextRequest, NextResponse } from 'next/server'
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
@@ -22,6 +24,8 @@ export async function GET(
             headers['Cookie'] = cookies
         }
 
+        headers['X-Forwarded-For'] = getClientIp(request)
+
         const response = await fetch(`${API_BASE_URL}/api/cuentas/${id}/responsables`, {
             method: 'GET',
             headers,
@@ -39,7 +43,7 @@ export async function GET(
 
         return NextResponse.json(data)
     } catch (error) {
-        console.error('Proxy: Error al obtener responsables:', error)
+        logger.error('Proxy: Error al obtener responsables:', error)
         return NextResponse.json(
             { message: 'No se pudo conectar con el servidor backend' },
             { status: 503 }
@@ -68,6 +72,8 @@ export async function POST(
             headers['Cookie'] = cookies
         }
 
+        headers['X-Forwarded-For'] = getClientIp(request)
+
         const response = await fetch(`${API_BASE_URL}/api/cuentas/${id}/responsables`, {
             method: 'POST',
             headers,
@@ -86,7 +92,7 @@ export async function POST(
 
         return NextResponse.json(data, { status: 201 })
     } catch (error) {
-        console.error('Proxy: Error al crear responsable:', error)
+        logger.error('Proxy: Error al crear responsable:', error)
         return NextResponse.json(
             { message: 'No se pudo conectar con el servidor backend' },
             { status: 503 }

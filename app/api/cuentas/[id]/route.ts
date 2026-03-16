@@ -1,3 +1,5 @@
+import { logger } from '@/lib/utils/logger'
+import { getClientIp } from '@/lib/utils/client-ip'
 import { NextRequest, NextResponse } from 'next/server'
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
@@ -22,6 +24,8 @@ export async function GET(
             headers['Cookie'] = cookies
         }
 
+        headers['X-Forwarded-For'] = getClientIp(request)
+
         const response = await fetch(`${API_BASE_URL}/api/cuentas/${id}`, {
             method: 'GET',
             headers,
@@ -39,7 +43,7 @@ export async function GET(
 
         return NextResponse.json(data)
     } catch (error) {
-        console.error('Proxy: Error al obtener cuenta:', error)
+        logger.error('Proxy: Error al obtener cuenta:', error)
         return NextResponse.json(
             { message: 'No se pudo conectar con el servidor backend' },
             { status: 503 }
@@ -68,6 +72,8 @@ export async function PUT(
             headers['Cookie'] = cookies
         }
 
+        headers['X-Forwarded-For'] = getClientIp(request)
+
         const response = await fetch(`${API_BASE_URL}/api/cuentas/${id}`, {
             method: 'PUT',
             headers,
@@ -86,7 +92,7 @@ export async function PUT(
 
         return NextResponse.json(data)
     } catch (error) {
-        console.error('Proxy: Error al actualizar cuenta:', error)
+        logger.error('Proxy: Error al actualizar cuenta:', error)
         return NextResponse.json(
             { message: 'No se pudo conectar con el servidor backend' },
             { status: 503 }

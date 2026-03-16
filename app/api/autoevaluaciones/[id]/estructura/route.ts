@@ -1,3 +1,4 @@
+import { logger } from '@/lib/utils/logger'
 import { NextRequest, NextResponse } from 'next/server'
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
@@ -9,7 +10,7 @@ export async function GET(
     try {
         const { id } = await params
 
-        console.log('Proxy Autoevaluacion: Obteniendo estructura para ID', id)
+        logger.log('Proxy Autoevaluacion: Obteniendo estructura para ID', id)
 
         // Reenviar todas las cookies del cliente al backend
         const cookies = request.headers.get('Cookie')
@@ -32,7 +33,7 @@ export async function GET(
         }
 
         const backendUrl = `${API_BASE_URL}/api/autoevaluaciones/${id}/estructura`
-        console.log('Proxy Autoevaluacion: Llamando a', backendUrl)
+        logger.log('Proxy Autoevaluacion: Llamando a', backendUrl)
 
         const response = await fetch(backendUrl, {
             method: 'GET',
@@ -40,7 +41,7 @@ export async function GET(
             credentials: 'include', // Incluir cookies en la petición
         })
 
-        console.log('Proxy Autoevaluacion: Respuesta del backend:', response.status)
+        logger.log('Proxy Autoevaluacion: Respuesta del backend:', response.status)
 
         // Si es texto plano o error, intentar obtener como texto primero
         const contentType = response.headers.get('content-type')
@@ -50,19 +51,19 @@ export async function GET(
             data = await response.json().catch(() => ({}))
         } else {
             const text = await response.text()
-            console.log('Proxy Autoevaluacion: Respuesta no-JSON:', text)
+            logger.log('Proxy Autoevaluacion: Respuesta no-JSON:', text)
             data = { message: text || `Error ${response.status}` }
         }
 
         if (!response.ok) {
-            console.error('Proxy Autoevaluacion: Error del backend:', response.status, data)
+            logger.error('Proxy Autoevaluacion: Error del backend:', response.status, data)
             return NextResponse.json(
                 { message: data.message || data.error || `Error ${response.status}: ${response.statusText}` },
                 { status: response.status }
             )
         }
 
-        console.log('Proxy Autoevaluacion: Estructura obtenida exitosamente')
+        logger.log('Proxy Autoevaluacion: Estructura obtenida exitosamente')
 
         // Crear respuesta y reenviar cookies del backend al cliente
         const nextResponse = NextResponse.json(data)
@@ -73,7 +74,7 @@ export async function GET(
 
         return nextResponse
     } catch (error) {
-        console.error('Proxy Autoevaluacion: Error de conexión:', error)
+        logger.error('Proxy Autoevaluacion: Error de conexión:', error)
         return NextResponse.json(
             { message: 'No se pudo conectar con el servidor backend' },
             { status: 503 }

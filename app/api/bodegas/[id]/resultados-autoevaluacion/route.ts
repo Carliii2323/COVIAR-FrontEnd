@@ -1,3 +1,4 @@
+import { logger } from '@/lib/utils/logger'
 import { NextRequest, NextResponse } from 'next/server'
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
@@ -33,7 +34,7 @@ export async function GET(
         // Siempre devolvemos la respuesta, incluso si es el error "recurso no encontrado"
         return NextResponse.json(data, { status: response.status })
     } catch (error) {
-        console.error('Proxy: Error al obtener resultados de autoevaluación:', error)
+        logger.error('Proxy: Error al obtener resultados de autoevaluación:', error)
         return NextResponse.json(
             { error: 'No se pudo conectar con el servidor backend' },
             { status: 503 }

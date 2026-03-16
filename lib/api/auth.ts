@@ -1,7 +1,9 @@
 // lib/api/auth.ts
 
+import { logger } from '@/lib/utils/logger'
 import type {
   LoginRequest,
+  LoginData,
   RegistroRequest,
   RegistroResponse,
   Usuario,
@@ -33,7 +35,7 @@ export async function registrarBodega(data: RegistroRequest): Promise<RegistroRe
       throw new Error(result.message || `Error ${response.status}: ${response.statusText}`)
     }
 
-    console.log('Bodega registrada:', result)
+    logger.log('Bodega registrada:', result)
     return result
   } catch (error) {
     if (error instanceof TypeError && error.message === 'Failed to fetch') {
@@ -48,7 +50,7 @@ export async function registrarBodega(data: RegistroRequest): Promise<RegistroRe
  * Usa el proxy de Next.js para evitar problemas de CORS
  * POST /api/auth/login -> proxy -> http://localhost:8080/api/login
  */
-export async function loginUsuario(data: LoginRequest): Promise<unknown> {
+export async function loginUsuario(data: LoginRequest): Promise<LoginData> {
   try {
     // Usar el proxy de Next.js para evitar CORS
     const response = await fetch('/api/auth/login', {
@@ -69,7 +71,7 @@ export async function loginUsuario(data: LoginRequest): Promise<unknown> {
     // Extraer el objeto data que contiene toda la información del usuario
     const userData = result.data || result
 
-    console.log('Login exitoso, datos recibidos:', userData)
+    logger.log('Login exitoso, datos recibidos:', userData)
 
     // Guardar en localStorage
     localStorage.setItem('usuario', JSON.stringify(userData))
@@ -101,9 +103,9 @@ export async function logoutUsuario(): Promise<void> {
         'Content-Type': 'application/json',
       },
     })
-    console.log('Logout exitoso en el backend')
+    logger.log('Logout exitoso en el backend')
   } catch (error) {
-    console.error('Error al hacer logout en el servidor:', error)
+    logger.error('Error al hacer logout en el servidor:', error)
   } finally {
     // Siempre limpiar datos de localStorage, incluso si falla el backend
     localStorage.removeItem('usuario')

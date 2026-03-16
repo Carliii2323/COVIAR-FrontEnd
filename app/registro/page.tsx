@@ -1,6 +1,7 @@
 ﻿"use client"
 
 import type React from "react"
+import { logger } from "@/lib/utils/logger"
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
@@ -250,7 +251,7 @@ export default function RegistroPage() {
           setProvincias(data)
         }
       } catch (err) {
-        console.error("Error cargando provincias:", err)
+        logger.error("Error cargando provincias:", err)
       } finally {
         if (isMounted) {
           setLoadingProvincias(false)
@@ -281,7 +282,7 @@ export default function RegistroPage() {
           setDepartamentos(data)
         })
         .catch((err) => {
-          console.error("Error cargando departamentos:", err)
+          logger.error("Error cargando departamentos:", err)
           setDepartamentos([])
         })
         .finally(() => {
@@ -304,7 +305,7 @@ export default function RegistroPage() {
           setLocalidades(data)
         })
         .catch((err) => {
-          console.error("Error cargando localidades:", err)
+          logger.error("Error cargando localidades:", err)
           setLocalidades([])
         })
         .finally(() => {

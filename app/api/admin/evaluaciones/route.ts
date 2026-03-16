@@ -1,3 +1,4 @@
+import { logger } from '@/lib/utils/logger'
 import { NextRequest, NextResponse } from 'next/server'
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
@@ -45,7 +46,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(data)
   } catch (error) {
-    console.error('Error al conectar con el backend:', error)
+    logger.error('Error al conectar con el backend:', error)
     return NextResponse.json(
       { message: 'No se pudo conectar con el servidor' },
       { status: 503 }

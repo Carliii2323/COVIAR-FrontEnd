@@ -4,8 +4,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from "recharts"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 
+interface BodegaProfile {
+  nombre_fantasia?: string
+  razon_social?: string
+  [key: string]: unknown
+}
+
 interface Props {
-  profile: any
+  profile: BodegaProfile
   responsesCount: number
   totalScore: number
 }

@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { getClientIp } from '@/lib/utils/client-ip'
+import { logger } from '@/lib/utils/logger'
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
 
@@ -18,7 +20,7 @@ export async function GET(request: NextRequest) {
             )
         }
 
-        console.log('Proxy: Obteniendo historial para bodega', idBodega)
+        logger.log('Proxy: Obteniendo historial para bodega', idBodega)
 
         const cookies = request.headers.get('Cookie')
         const authHeader = request.headers.get('Authorization')
@@ -33,6 +35,7 @@ export async function GET(request: NextRequest) {
 
         if (authHeader) {
             headers['Authorization'] = authHeader
+        headers['X-Forwarded-For'] = getClientIp(request)
         }
 
         const response = await fetch(
@@ -47,17 +50,17 @@ export async function GET(request: NextRequest) {
         const data = await response.json().catch(() => [])
 
         if (!response.ok) {
-            console.error('Proxy: Error al obtener historial:', response.status, data)
+            logger.error('Proxy: Error al obtener historial:', response.status, data)
             return NextResponse.json(
                 { message: data.message || `Error ${response.status}: ${response.statusText}` },
                 { status: response.status }
             )
         }
 
-        console.log('Proxy: Historial obtenido:', data)
+        logger.log('Proxy: Historial obtenido:', data)
         return NextResponse.json(data, { status: 200 })
     } catch (error) {
-        console.error('Proxy: Error de conexión:', error)
+        logger.error('Proxy: Error de conexión:', error)
         return NextResponse.json(
             { message: 'No se pudo conectar con el servidor backend' },
             { status: 503 }

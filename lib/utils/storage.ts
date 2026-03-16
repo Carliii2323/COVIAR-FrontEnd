@@ -1,3 +1,4 @@
+import { logger } from '@/lib/utils/logger'
 // lib/utils/storage.ts
 
 /**
@@ -20,7 +21,7 @@ export function setItem(key: string, value: unknown): void {
     const serialized = typeof value === 'string' ? value : JSON.stringify(value)
     localStorage.setItem(key, serialized)
   } catch (error) {
-    console.error(`Error al guardar en localStorage (${key}):`, error)
+    logger.error(`Error al guardar en localStorage (${key}):`, error)
   }
 }
 
@@ -41,7 +42,7 @@ export function getItem<T>(key: string): T | null {
       return item as T
     }
   } catch (error) {
-    console.error(`Error al leer de localStorage (${key}):`, error)
+    logger.error(`Error al leer de localStorage (${key}):`, error)
     return null
   }
 }
@@ -55,7 +56,7 @@ export function removeItem(key: string): void {
   try {
     localStorage.removeItem(key)
   } catch (error) {
-    console.error(`Error al eliminar de localStorage (${key}):`, error)
+    logger.error(`Error al eliminar de localStorage (${key}):`, error)
   }
 }
 
@@ -68,7 +69,7 @@ export function clear(): void {
   try {
     localStorage.clear()
   } catch (error) {
-    console.error('Error al limpiar localStorage:', error)
+    logger.error('Error al limpiar localStorage:', error)
   }
 }
 

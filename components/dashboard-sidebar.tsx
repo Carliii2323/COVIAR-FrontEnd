@@ -1,4 +1,5 @@
 "use client"
+import { logger } from "@/lib/utils/logger"
 
 import { Home, ClipboardList, History, Settings, LogOut, User, BarChart3 } from "lucide-react"
 import Link from "next/link"
@@ -61,7 +62,7 @@ export function DashboardSidebar() {
         const parsedUsuario = JSON.parse(usuarioStr)
         setUsuario(parsedUsuario)
       } catch (error) {
-        console.error('Error al parsear usuario:', error)
+        logger.error('Error al parsear usuario:', error)
       }
     }
   }, [])

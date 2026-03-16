@@ -1,3 +1,4 @@
+import { logger } from '@/lib/utils/logger'
 import { NextRequest, NextResponse } from 'next/server'
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
@@ -9,7 +10,7 @@ export async function GET(
     try {
         const { id } = await params
 
-        console.log('Proxy Autoevaluacion: Obteniendo segmentos para ID', id)
+        logger.log('Proxy Autoevaluacion: Obteniendo segmentos para ID', id)
 
         // Reenviar todas las cookies del cliente al backend
         const cookies = request.headers.get('Cookie')
@@ -54,7 +55,7 @@ export async function GET(
 
         return NextResponse.json(data)
     } catch (error) {
-        console.error('Proxy Autoevaluacion: Error de conexión:', error)
+        logger.error('Proxy Autoevaluacion: Error de conexión:', error)
         return NextResponse.json(
             { message: 'No se pudo conectar con el servidor backend' },
             { status: 503 }

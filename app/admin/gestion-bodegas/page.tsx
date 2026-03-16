@@ -1,4 +1,5 @@
 "use client"
+import { logger } from "@/lib/utils/logger"
 
 import { useEffect, useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -100,7 +101,7 @@ export default function GestionBodegasPage() {
       setFilteredBodegas(data)
       setCurrentPage(1)
     } catch (err) {
-      console.error("Error al cargar bodegas:", err)
+      logger.error("Error al cargar bodegas:", err)
       setError(err instanceof Error ? err.message : "Error al cargar bodegas")
     } finally {
       setIsLoading(false)
@@ -170,7 +171,7 @@ export default function GestionBodegasPage() {
       setNuevaPassword("")
       setConfirmarPassword("")
     } catch (err) {
-      console.error("Error al cambiar contraseña:", err)
+      logger.error("Error al cambiar contraseña:", err)
       setPasswordError("Error al conectar con el servidor")
     } finally {
       setCambiandoPassword(false)

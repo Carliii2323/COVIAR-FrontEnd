@@ -1,3 +1,5 @@
+import { logger } from '@/lib/utils/logger'
+import { getClientIp } from '@/lib/utils/client-ip'
 import { NextRequest, NextResponse } from 'next/server'
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
@@ -13,7 +15,7 @@ export async function POST(
     try {
         const { id } = await params
 
-        console.log('Proxy: Cancelando autoevaluación', id)
+        logger.log('Proxy: Cancelando autoevaluación', id)
 
         const cookies = request.headers.get('Cookie')
         const authHeader = request.headers.get('Authorization')
@@ -30,6 +32,8 @@ export async function POST(
             headers['Authorization'] = authHeader
         }
 
+        headers['X-Forwarded-For'] = getClientIp(request)
+
         const backendUrl = `${API_BASE_URL}/api/autoevaluaciones/${id}/cancelar`
 
         const response = await fetch(backendUrl, {
@@ -41,17 +45,17 @@ export async function POST(
         const data = await response.json().catch(() => ({}))
 
         if (!response.ok) {
-            console.error('Proxy: Error al cancelar autoevaluación:', response.status, data)
+            logger.error('Proxy: Error al cancelar autoevaluación:', response.status, data)
             return NextResponse.json(
                 { message: data.message || `Error ${response.status}: ${response.statusText}` },
                 { status: response.status }
             )
         }
 
-        console.log('Proxy: Autoevaluación cancelada exitosamente')
+        logger.log('Proxy: Autoevaluación cancelada exitosamente')
         return NextResponse.json(data)
     } catch (error) {
-        console.error('Proxy: Error de conexión:', error)
+        logger.error('Proxy: Error de conexión:', error)
         return NextResponse.json(
             { message: 'No se pudo conectar con el servidor backend' },
             { status: 503 }
