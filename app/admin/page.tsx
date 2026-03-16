@@ -165,7 +165,7 @@ export default function AdminDashboard() {
         <Card className="md:col-span-2 bg-white border border-gray-200 shadow-sm">
           <CardHeader className="pb-1">
             <CardTitle className="text-sm font-bold text-gray-700 text-center">
-              Promedio general de nivel de sostenibilidad
+              Nivel de sostenibilidad general
             </CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col items-center pt-2 pb-4">
