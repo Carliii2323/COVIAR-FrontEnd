@@ -1,8 +1,8 @@
 const Introduction = () => {
   const benefits = [
-    { title: "Diagnóstico Real", desc: "Conocé el nivel actual de desempeño de tu bodega en sostenibilidad con indicadores precisos." },
-    { title: "Mejora Continua", desc: "Identificá oportunidades concretas y planificá acciones estratégicas a corto y largo plazo." },
-    { title: "Competitividad", desc: "Alineate con las tendencias internacionales y exigencias del turismo sostenible global." },
+    { title: "Diagnóstico Real", desc: "Conocimiento del nivel actual de desempeño de su bodega en sostenibilidad con indicadores precisos." },
+    { title: "Mejora Continua", desc: "Identificación de oportunidades concretas y planificación de acciones estratégicas a corto y largo plazo." },
+    { title: "Competitividad", desc: "Alineación con las tendencias internacionales y exigencias del turismo sostenible global." },
   ];
 
   return (
@@ -13,11 +13,11 @@ const Introduction = () => {
           <h1 className="font-serif text-2xl md:text-3xl font-bold text-coviar-borravino mb-2">
             Para qué sirve
           </h1>
-          <h2 className="text-coviar-borravino-dark font-serif text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
+          <h2 className="text-coviar-borravino-dark font-serif text-2xl md:text-3xl lg:text-4xl font-bold mb-4">
             Gestión y mejora progresiva
           </h2>
           <p className="text-gray-600 text-lg">
-            Esta plataforma es un espacio digital diseñado para acompañar a las bodegas en la gestión de sus prácticas, brindando una hoja de ruta clara hacia la sostenibilidad.
+            La plataforma constituye un espacio digital diseñado para acompañar a las bodegas en la gestión de sus prácticas, brindando una hoja de ruta clara hacia la sostenibilidad.
           </p>
         </div>
 

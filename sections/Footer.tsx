@@ -12,7 +12,7 @@ const Footer = () => {
                 <img 
                   src="/assets/footer/FooterBlanco.svg" 
                   alt="COVIAR" 
-                  className="w-full h-auto opacity-90 hover:opacity-100 transition-opacity"
+                  className="w-[65%] h-auto opacity-90 hover:opacity-100 transition-opacity"
                 />
             </div>
         </div>
@@ -24,20 +24,20 @@ const Footer = () => {
             <div className="space-y-4">
                 <details className="bg-gray-800 rounded p-4 cursor-pointer">
                     <summary className="font-medium hover:text-coviar-red transition">¿La autoevaluación tiene costo?</summary>
-                    <p className="text-gray-400 mt-2 text-sm">No, es una herramienta gratuita provista por COVIAR para el desarrollo del sector.</p>
+                    <p className="text-gray-400 mt-2 text-sm">No. Se trata de una herramienta gratuita provista por COVIAR para el desarrollo del sector.</p>
                 </details>
                 <details className="bg-gray-800 rounded p-4 cursor-pointer">
-                    <summary className="font-medium hover:text-coviar-red transition">¿Quién ve mis datos?</summary>
-                    <p className="text-gray-400 mt-2 text-sm">La información es confidencial y estratégica, accesible solo por la bodega y el equipo técnico para la generación del informe.</p>
+                    <summary className="font-medium hover:text-coviar-red transition">¿Quién ve los datos?</summary>
+                    <p className="text-gray-400 mt-2 text-sm">La información es confidencial y estratégica, accesible únicamente por la bodega y el equipo técnico para la generación del informe.</p>
                 </details>
             </div>
           </div>
 
           {/* Contacto */}
           <div>
-            <h3 className="text-xl font-bold mb-6">¿Necesitás ayuda?</h3>
+            <h3 className="text-xl font-bold mb-6">¿Necesita asistencia?</h3>
             <p className="text-gray-400 mb-6">
-                Si tenés dudas sobre cómo determinar tu categoría o llenar el formulario, nuestro equipo de soporte está disponible.
+                Si tiene dudas sobre cómo determinar su categoría o completar el formulario, el equipo de soporte está disponible.
             </p>
             <a href="mailto:soporte@coviar.com.ar" className="inline-block bg-white text-gray-900 px-6 py-3 rounded font-bold hover:bg-coviar-red hover:text-white transition duration-300">
                 Contactar Soporte Técnico

@@ -29,7 +29,7 @@ const DownloadGuide = () => {
                   Para más información
                 </h3>
                 <p className="text-white/90 text-lg">
-                  Descargue nuestra Guía de Sostenibilidad Enoturística Argentina
+                  Descarga de la Guia de Sostenibilidad Enoturística Argentina
                 </p>
               </div>
 
