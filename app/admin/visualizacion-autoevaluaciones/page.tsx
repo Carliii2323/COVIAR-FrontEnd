@@ -197,7 +197,7 @@ export default function GestionAutoevaluacionPage() {
         <div>
           <h1 className="text-3xl font-bold">Gestión de Autoevaluaciones</h1>
           <p className="text-muted-foreground">
-            Administra y supervisa todas las autoevaluaciones del sistema
+            Administre y supervise todas las autoevaluaciones del sistema
           </p>
         </div>
         <Button onClick={exportToCSV} disabled={filteredEvaluaciones.length === 0}>
@@ -221,7 +221,7 @@ export default function GestionAutoevaluacionPage() {
             <Filter className="h-5 w-5" />
             <CardTitle>Filtros</CardTitle>
           </div>
-          <CardDescription>Filtra las evaluaciones por estado o busca por nombre</CardDescription>
+          <CardDescription>Filtrar las evaluaciones por estado o buscar por nombre</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex flex-col md:flex-row gap-4">
