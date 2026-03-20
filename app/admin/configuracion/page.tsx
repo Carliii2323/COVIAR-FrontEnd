@@ -341,7 +341,7 @@ export default function ConfiguracionPage() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle>Visualización</CardTitle>
+              <CardTitle>Accesibilidad</CardTitle>
               <CardDescription>Ajuste del tamaño de texto según su pantalla y preferencias</CardDescription>
             </div>
             <Button variant="outline" size="sm" onClick={detectAutoSize} className="shrink-0 gap-2">
