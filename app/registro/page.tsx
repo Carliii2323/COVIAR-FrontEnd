@@ -356,7 +356,9 @@ export default function RegistroPage() {
       }
 
       await registrarBodega(registroData)
-      router.push("/registro-exitoso")
+      //router.push("/registro-exitoso")
+      //redirige a la pantalla de verificación de correo
+      router.push(`/verificar-correo?email=${encodeURIComponent(emailLogin.trim())}`)
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : ""
       const errorLower = errorMessage.toLowerCase()
