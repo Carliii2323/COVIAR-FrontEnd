@@ -73,7 +73,7 @@ export default function RegistroPage() {
   const validateEmail = (email: string): string => {
     if (!email.trim()) return "El email es requerido"
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(email)) return "Ingrese un email valido"
+    if (!emailRegex.test(email)) return "Ingrese un correo válido"
     return ""
   }
 
@@ -97,26 +97,26 @@ export default function RegistroPage() {
   const validateCuit = (value: string): string => {
     if (!value.trim()) return "El CUIT es requerido"
     if (value.length !== 11) return "El CUIT debe tener 11 digitos"
-    if (!/^\d+$/.test(value)) return "El CUIT solo debe contener numeros"
+    if (!/^\d+$/.test(value)) return "El CUIT solo debe contener números"
     return ""
   }
 
   const validateTelefono = (value: string): string => {
-    if (!value.trim()) return "El telefono es requerido"
-    if (!/^\d{7,15}$/.test(value.replace(/\s/g, ""))) return "Ingrese un telefono valido (7-15 digitos)"
+    if (!value.trim()) return "El teléfono es requerido"
+    if (!/^\d{7,15}$/.test(value.replace(/\s/g, ""))) return "Ingrese un teléfono válido (7-15 dígitos)"
     return ""
   }
 
   const validateInv = (value: string, fieldName: string): string => {
     if (!value.trim()) return "" // Campo opcional
     const invRegex = /^[a-zA-Z]\d{5}$/
-    if (!invRegex.test(value)) return `${fieldName} debe tener 1 letra y 5 numeros (ej: A12345)`
+    if (!invRegex.test(value)) return `${fieldName} debe tener 1 letra y 5 números (ej: A12345)`
     return ""
   }
 
   const validateDni = (value: string): string => {
     if (!value.trim()) return "El DNI es requerido"
-    if (!/^\d{7,8}$/.test(value)) return "El DNI debe tener 7 u 8 digitos"
+    if (!/^\d{7,8}$/.test(value)) return "El DNI debe tener 7 u 8 dígitos"
     return ""
   }
 
@@ -135,9 +135,9 @@ export default function RegistroPage() {
       case "confirmPassword":
         return validateConfirmPassword(value, password)
       case "nombreFantasia":
-        return validateRequired(value, "El nombre de fantasia")
+        return validateRequired(value, "El nombre de fantasía")
       case "razonSocial":
-        return validateRequired(value, "La razon social")
+        return validateRequired(value, "La razón social")
       case "emailInstitucional":
         return validateEmail(value)
       case "cuit":
@@ -145,9 +145,9 @@ export default function RegistroPage() {
       case "telefono":
         return validateTelefono(value)
       case "invBod":
-        return validateInv(value, "N Bodega INV")
+        return validateInv(value, "N° Bodega INV")
       case "invVin":
-        return validateInv(value, "N Vinedo INV")
+        return validateInv(value, "N° Viñedo INV")
       case "nombre":
         return validateRequired(value, "El nombre")
       case "apellido":
@@ -194,13 +194,13 @@ export default function RegistroPage() {
     errors.emailLogin = validateEmail(emailLogin)
     errors.password = validatePassword(password)
     errors.confirmPassword = validateConfirmPassword(confirmPassword, password)
-    errors.nombreFantasia = validateRequired(nombreFantasia, "El nombre de fantasia")
-    errors.razonSocial = validateRequired(razonSocial, "La razon social")
+    errors.nombreFantasia = validateRequired(nombreFantasia, "El nombre de fantasía")
+    errors.razonSocial = validateRequired(razonSocial, "La razón social")
     errors.emailInstitucional = validateEmail(emailInstitucional)
     errors.cuit = validateCuit(cuit)
     errors.telefono = validateTelefono(telefono)
-    errors.invBod = validateInv(invBod, "N Bodega INV")
-    errors.invVin = validateInv(invVin, "N Vinedo INV")
+    errors.invBod = validateInv(invBod, "N° Bodega INV")
+    errors.invVin = validateInv(invVin, "N° Viñedo INV")
     errors.nombre = validateRequired(nombre, "El nombre")
     errors.apellido = validateRequired(apellido, "El apellido")
     errors.cargo = validateRequired(cargo, "El cargo")
@@ -420,7 +420,7 @@ export default function RegistroPage() {
         <CardContent className="p-8">
           <form onSubmit={handleSubmit} className="space-y-8">
 
-            {/* Seccion: Datos de Acceso */}
+            {/* Sección: Datos de Acceso */}
             <section className="space-y-4">
               <h3 className="text-base font-semibold text-coviar-borravino border-b border-coviar-borravino/20 pb-2">
                 Datos de Acceso
@@ -443,7 +443,7 @@ export default function RegistroPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="password" className={touched.password && fieldErrors.password ? "text-red-500" : ""}>
-                    Contrasena <span className="text-red-500">*</span>
+                    Contraseña <span className="text-red-500">*</span>
                   </Label>
                   <div className="relative">
                     <Input
@@ -452,7 +452,7 @@ export default function RegistroPage() {
                       value={password}
                       onChange={(e) => handleFieldChange("password", e.target.value, setPassword)}
                       onBlur={() => handleBlur("password", password)}
-                      placeholder="Minimo 8 caracteres"
+                      placeholder="Mínimo 8 caracteres"
                       className={`pr-10 h-11 ${touched.password && fieldErrors.password ? "border-red-500 focus-visible:ring-red-500" : ""}`}
                     />
                     <button
@@ -475,7 +475,7 @@ export default function RegistroPage() {
 
                 <div className="space-y-2">
                   <Label htmlFor="confirmPassword" className={touched.confirmPassword && fieldErrors.confirmPassword ? "text-red-500" : ""}>
-                    Repetir contrasena <span className="text-red-500">*</span>
+                    Repetir contraseña <span className="text-red-500">*</span>
                   </Label>
                   <div className="relative">
                     <Input
@@ -493,7 +493,7 @@ export default function RegistroPage() {
                         }
                       }}
                       onBlur={() => handleBlur("confirmPassword", confirmPassword)}
-                      placeholder="Repita la contrasena"
+                      placeholder="Repita la contraseña"
                       className={`pr-20 h-11 ${
                         confirmPassword.length > 0 && confirmPassword === password 
                           ? "border-green-500 focus-visible:ring-green-500" 
@@ -537,7 +537,7 @@ export default function RegistroPage() {
               </div>
             </section>
 
-            {/* Seccion: Datos de la Bodega */}
+            {/* Sección: Datos de la Bodega */}
             <section className="space-y-4">
               <h3 className="text-base font-semibold text-coviar-borravino border-b border-coviar-borravino/20 pb-2">
                 Datos de la Bodega
@@ -545,7 +545,7 @@ export default function RegistroPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="nombreFantasia" className={getLabelErrorClass("nombreFantasia")}>Nombre Fantasia <span className="text-red-500">*</span></Label>
+                  <Label htmlFor="nombreFantasia" className={getLabelErrorClass("nombreFantasia")}>Nombre Fantasía <span className="text-red-500">*</span></Label>
                   <Input
                     id="nombreFantasia"
                     value={nombreFantasia}
@@ -558,7 +558,7 @@ export default function RegistroPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="razonSocial" className={getLabelErrorClass("razonSocial")}>Razon Social <span className="text-red-500">*</span></Label>
+                  <Label htmlFor="razonSocial" className={getLabelErrorClass("razonSocial")}>Razón Social <span className="text-red-500">*</span></Label>
                   <Input
                     id="razonSocial"
                     value={razonSocial}
@@ -587,7 +587,7 @@ export default function RegistroPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="telefono" className={getLabelErrorClass("telefono")}>Telefono <span className="text-red-500">*</span></Label>
+                  <Label htmlFor="telefono" className={getLabelErrorClass("telefono")}>Teléfono <span className="text-red-500">*</span></Label>
                   <Input
                     id="telefono"
                     type="tel"
@@ -621,7 +621,7 @@ export default function RegistroPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="invBod" className={getLabelErrorClass("invBod")}>N Bodega INV</Label>
+                  <Label htmlFor="invBod" className={getLabelErrorClass("invBod")}>N° Bodega INV</Label>
                   <Input
                     id="invBod"
                     value={invBod}
@@ -635,7 +635,7 @@ export default function RegistroPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="invVin" className={getLabelErrorClass("invVin")}>N de Vinedo INV</Label>
+                  <Label htmlFor="invVin" className={getLabelErrorClass("invVin")}>N° de Viñedo INV</Label>
                   <Input
                     id="invVin"
                     value={invVin}
@@ -650,7 +650,7 @@ export default function RegistroPage() {
               </div>
             </section>
 
-            {/* Seccion: Responsable */}
+            {/* Sección: Responsable */}
             <section className="space-y-4">
               <h3 className="text-base font-semibold text-coviar-borravino border-b border-coviar-borravino/20 pb-2">
                 Responsable
@@ -718,10 +718,10 @@ export default function RegistroPage() {
               </div>
             </section>
 
-            {/* Seccion: Ubicacion */}
+            {/* Sección: Ubicación */}
             <section className="space-y-4">
               <h3 className="text-base font-semibold text-coviar-borravino border-b border-coviar-borravino/20 pb-2">
-                Ubicacion
+                Ubicación
               </h3>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -828,7 +828,7 @@ export default function RegistroPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="numeracion">Numeracion</Label>
+                  <Label htmlFor="numeracion">Numeración</Label>
                   <Input
                     id="numeracion"
                     value={numeracion}

@@ -1,9 +1,9 @@
 const Process = () => {
   const steps = [
-    { num: "01", title: "Registro", desc: "Creación del perfil único de tu bodega en la plataforma segura de COVIAR." },
-    { num: "02", title: "Categorías", desc: "El sistema adapta la encuesta según tu tamaño: desde 'Micro Bodega' hasta 'Gran Bodega Turística'." },
-    { num: "03", title: "Evaluación", desc: "Completá los indicadores por capítulos: Gobernanza, Agua, Energía, Residuos, etc." },
-    { num: "04", title: "Resultados", desc: "Obtené tu puntaje total, nivel de sostenibilidad alcanzado e inform de mejoras." },
+    { num: "01", title: "Registro", desc: "Creación del perfil único de su bodega en la plataforma de COVIAR." },
+    { num: "02", title: "Segmentación", desc: "El sistema adapta la encuesta según el tamaño: desde 'Micro Bodega' hasta 'Gran Bodega Turística'." },
+    { num: "03", title: "Evaluación", desc: "Completación de indicadores por capítulos: Gobernanza, Agua, Energía, Residuos, etc." },
+    { num: "04", title: "Resultados", desc: "Obtención del puntaje total, nivel de sostenibilidad alcanzado e informe de mejoras." },
   ];
 
   return (
@@ -13,7 +13,7 @@ const Process = () => {
           <h3 className="font-serif text-2xl md:text-3xl font-bold text-coviar-borravino mb-2">
             Proceso
           </h3>
-          <h2 className="text-coviar-borravino-dark text-3xl md:text-4xl lg:text-5xl font-serif font-bold mt-2">Camino a la Autoevaluación ¿Cómo funciona?</h2>
+          <h2 className="text-coviar-borravino-dark text-2xl md:text-3xl lg:text-4xl font-serif font-bold mt-2">Camino a la Autoevaluación</h2>
         </div>
 
         <div className="grid md:grid-cols-4 gap-8">

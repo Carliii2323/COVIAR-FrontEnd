@@ -18,16 +18,16 @@ const Hero = () => {
       {/* CONTENIDO */}
       <div className="relative z-10 text-center px-4 max-w-5xl mx-auto mt-16">
         <div className="mb-4 inline-block bg-white/10 px-4 py-1 rounded-full border border-white/20 backdrop-blur-sm">
-          <span className="text-white text-sm font-semibold tracking-wider uppercase">Guía de Enoturismo Sostenible</span>
+          <span className="text-white text-sm font-semibold tracking-wider uppercase">Guia de Enoturismo Sostenible</span>
         </div>
 
-        <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight">
+        <h1 className="font-serif text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-6 leading-tight">
           Plataforma de Autoevaluación para Bodegas Turísticas <br />
           <span className="text-white border-b-4 border-coviar-red">y sus Experiencias Enoturísticas</span>
         </h1>
         
         <p className="font-sans text-lg md:text-xl text-gray-100 mb-10 max-w-3xl mx-auto font-light leading-relaxed">
-          Evaluá, ordená y fortalecé la sostenibilidad de tu bodega con estándares internacionales adaptados a nuestra realidad vitivinícola.
+          Evaluar, ordenar y fortalecer la sostenibilidad de su bodega con estándares internacionales adaptados a la realidad vitivinícola argentina.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -38,7 +38,7 @@ const Hero = () => {
             className="inline-flex items-center gap-3 bg-coviar-borravino text-white border-2 border-white/30 hover:border-white px-8 py-4 rounded-lg font-medium transition duration-300 hover:bg-coviar-borravino-dark uppercase tracking-wide text-sm"
           >
             <Download className="w-6 h-6" />
-            Descargar Guia de Sostenibilidad Enoturística Argentina
+            Descargar Guía de Sostenibilidad Enoturística Argentina
           </a>
         </div>
       </div>

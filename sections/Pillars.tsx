@@ -5,25 +5,25 @@ const Pillars = () => {
     {
       icon: TrendingUp,
       title: "Dimensión Económica",
-      description: "Evaluamos la viabilidad financiera a largo plazo, la generación de empleo local y la integración en la economía regional. No solo se trata de rentabilidad, sino de prosperidad compartida.",
+      description: "Evaluación de la viabilidad financiera a largo plazo, la generación de empleo local y la integración en la economía regional. No se trata solamente de rentabilidad, sino de prosperidad compartida.",
       color: "text-coviar-borravino"
     },
     {
       icon: Leaf,
       title: "Dimensión Ambiental",
-      description: "Análisis del uso de recursos, gestión de residuos y protección de la biodiversidad. Fomentamos prácticas regenerativas que preserven el terroir para las futuras generaciones.",
+      description: "Análisis del uso de recursos, gestión de residuos y protección de la biodiversidad. Promoción de prácticas regenerativas que preserven el terroir para las futuras generaciones.",
       color: "text-green-600"
     },
     {
       icon: Users,
       title: "Social y Cultural",
-      description: "Valoración del impacto en la comunidad, equidad laboral y preservación del patrimonio vitivinícola. El vino es cultura y su producción debe respetar y enriquecer su entorno humano.",
+      description: "Valoración del impacto en la comunidad, equidad laboral y preservación del patrimonio vitivinícola. El vino constituye cultura y su producción debe respetar y enriquecer el entorno humano.",
       color: "text-blue-600"
     },
     {
       icon: Scale,
       title: "Gobernanza y Ética",
-      description: "Transparencia en la toma de decisiones, políticas anticorrupción y gestión de calidad. La estructura ética sólida es la base sobre la que se construye la verdadera sostenibilidad.",
+      description: "Transparencia en la toma de decisiones, políticas anticorrupción y gestión de calidad. La estructura ética sólida constituye la base sobre la que se construye la verdadera sostenibilidad.",
       color: "text-coviar-red"
     }
   ];
@@ -34,11 +34,11 @@ const Pillars = () => {
         
         {/* Encabezado */}
         <div className="text-center mb-16 max-w-4xl mx-auto">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-coviar-borravino-dark mb-6 leading-tight">
-            <span className="italic">Dimensiones</span> del Turismo Sostenible
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-serif font-bold text-coviar-borravino-dark mb-6 leading-tight">
+            <span>Dimensiones</span> del Turismo Sostenible
           </h2>
           <p className="text-gray-600 text-lg leading-relaxed">
-            Tradicionalmente, la sostenibilidad se ha entendido a través de tres pilares: económico, social y ambiental. Sin embargo, alineándonos con la Agenda 2030, hemos expandido esta visión para integrar la gobernanza y la cultura como ejes fundamentales para el desarrollo integral de las bodegas argentinas.
+            Tradicionalmente, la sostenibilidad se ha entendido a través de tres pilares: económico, social y ambiental. Sin embargo, en alineación con la Agenda 2030, se ha expandido esta visión para integrar la gobernanza y la cultura como ejes fundamentales para el desarrollo integral de las bodegas argentinas.
           </p>
         </div>
 
@@ -75,15 +75,15 @@ const Pillars = () => {
           </div>
           
           {/* Contenido */}
-          <div className="relative z-10 p-10 md:p-16 max-w-2xl">
+          <div className="relative z-10 p-10 md:p-16 max-w-2xl mx-auto text-center">
             <span className="inline-block bg-white/20 text-white text-xs font-semibold tracking-wider uppercase px-3 py-1 rounded-full mb-4">
               Visión 2030
             </span>
             <h3 className="text-3xl md:text-4xl font-serif font-bold text-white mb-4 leading-tight">
-              Comprometidos con el futuro del vino argentino.
+              Compromiso con el futuro del vino argentino.
             </h3>
             <p className="text-white/90 text-lg">
-              Una herramienta de evolución continua para bodegas que miran hacia adelante.
+              Herramienta de evolución continua para bodegas orientadas hacia el futuro.
             </p>
           </div>
         </div>

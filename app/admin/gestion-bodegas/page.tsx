@@ -240,7 +240,7 @@ export default function GestionBodegasPage() {
         <div>
           <h1 className="text-3xl font-bold">Gestión de Bodegas</h1>
           <p className="text-muted-foreground">
-            Administra y supervisa todas las bodegas registradas en el sistema
+            Administre y supervise todas las bodegas registradas en el sistema
           </p>
         </div>
       </div>
@@ -260,7 +260,7 @@ export default function GestionBodegasPage() {
             <Filter className="h-5 w-5" />
             <CardTitle>Filtros</CardTitle>
           </div>
-          <CardDescription>Busca bodegas por nombre, razón social, CUIT o email</CardDescription>
+          <CardDescription>Buscar bodegas por nombre, razón social, CUIT o correo electrónico</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex flex-col md:flex-row gap-4">
@@ -387,7 +387,7 @@ export default function GestionBodegasPage() {
                             onClick={() => handleAbrirInfo(bodega)}
                             className="h-7 px-2 text-xs"
                           >
-                            ...
+                            +
                           </Button>
                         </TableCell>
                       </TableRow>
@@ -481,7 +481,7 @@ export default function GestionBodegasPage() {
                     <Input
                       id="nueva-password"
                       type={showPassword ? "text" : "password"}
-                      placeholder="Mínimo 6 caracteres"
+                      placeholder="Mínimo 8 caracteres"
                       value={nuevaPassword}
                       onChange={(e) => setNuevaPassword(e.target.value)}
                       disabled={cambiandoPassword}

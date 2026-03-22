@@ -174,7 +174,7 @@ export default function ConfiguracionPage() {
     try {
       const usuarioStr = localStorage.getItem('usuario')
       if (!usuarioStr) {
-        setError("No se encontró información de sesión. Por favor, inicia sesión nuevamente.")
+        setError("No se encontró información de sesión. Por favor, inicie sesión nuevamente.")
         setIsLoading(false)
         return
       }
@@ -439,7 +439,7 @@ export default function ConfiguracionPage() {
       }
 
       await solicitarRestablecimientoPassword(email)
-      setSuccessMessage("Se ha enviado un correo con instrucciones para cambiar tu contraseña")
+      setSuccessMessage("Se ha enviado un correo con instrucciones para cambiar su contraseña")
 
     } catch (err) {
       logger.error('Error solicitando cambio de contraseña:', err)
@@ -465,7 +465,7 @@ export default function ConfiguracionPage() {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold">Configuración</h1>
-          <p className="text-muted-foreground">Administra tu cuenta y preferencias</p>
+          <p className="text-muted-foreground">Administre su cuenta y preferencias</p>
         </div>
         {!isEditing ? (
           <Button onClick={() => setIsEditing(true)}>
@@ -601,7 +601,7 @@ export default function ConfiguracionPage() {
             <div className="md:col-span-2 text-center py-8 text-muted-foreground">
               <UserMinus className="h-12 w-12 mx-auto mb-4 opacity-50" />
               <p>No hay un responsable activo.</p>
-              <p className="text-sm mt-2">Haz clic en "Agregar Responsable" para designar uno nuevo.</p>
+              <p className="text-sm mt-2">Haga clic en "Agregar Responsable" para designar uno nuevo.</p>
             </div>
           )}
         </CardContent>
@@ -610,7 +610,7 @@ export default function ConfiguracionPage() {
       <Card>
         <CardHeader>
           <CardTitle>Información de la Bodega/Viñedo</CardTitle>
-          <CardDescription>Datos registrados de tu establecimiento</CardDescription>
+          <CardDescription>Datos registrados de su establecimiento</CardDescription>
         </CardHeader>
         <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
@@ -687,7 +687,7 @@ export default function ConfiguracionPage() {
           <div className="flex items-center justify-between">
             <div>
               <CardTitle>Accesibilidad</CardTitle>
-              <CardDescription>Ajusta el tamaño del texto según tu pantalla y preferencias</CardDescription>
+              <CardDescription>Ajuste el tamaño del texto según su pantalla y preferencias</CardDescription>
             </div>
             <Button variant="outline" size="sm" onClick={detectAutoSize} className="shrink-0 gap-2">
               <Monitor className="h-4 w-4" />
@@ -719,7 +719,7 @@ export default function ConfiguracionPage() {
           </div>
           <p className="text-xs text-muted-foreground">
             El tamaño seleccionado se guarda automáticamente y se aplica en toda la plataforma.
-            Usá <strong>Detectar automáticamente</strong> para un valor recomendado según tu resolución de pantalla.
+            Use <strong>Detectar automáticamente</strong> para un valor recomendado según su resolución de pantalla.
           </p>
         </CardContent>
       </Card>
@@ -727,7 +727,7 @@ export default function ConfiguracionPage() {
       <Card>
         <CardHeader>
           <CardTitle>Seguridad</CardTitle>
-          <CardDescription>Gestiona la seguridad de tu cuenta</CardDescription>
+          <CardDescription>Gestione la seguridad de su cuenta</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-start justify-between p-4 border rounded-lg">
@@ -737,7 +737,7 @@ export default function ConfiguracionPage() {
                 <h3 className="font-semibold">Contraseña</h3>
               </div>
               <p className="text-sm text-muted-foreground">
-                Solicita un cambio de contraseña. Recibirás un correo electrónico con instrucciones para establecer una nueva contraseña.
+                Solicite un cambio de contraseña. Recibirá un correo electrónico con instrucciones para establecer una nueva contraseña.
               </p>
             </div>
             <Button
@@ -771,9 +771,9 @@ export default function ConfiguracionPage() {
               Confirmar Baja de Responsable
             </DialogTitle>
             <DialogDescription>
-              ¿Estás seguro de que deseas dar de baja a <strong>{formData.admin_first_name} {formData.admin_last_name}</strong>?
+              ¿Está seguro de que desea dar de baja a <strong>{formData.admin_first_name} {formData.admin_last_name}</strong>?
               <br /><br />
-              Esta acción marcará al responsable como inactivo. No podrás realizar autoevaluaciones sin un responsable activo.
+              Esta acción marcará al responsable como inactivo. No podrá realizar autoevaluaciones sin un responsable activo.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -811,9 +811,9 @@ export default function ConfiguracionPage() {
               Autoevaluación Pendiente
             </DialogTitle>
             <DialogDescription>
-              El responsable tiene una autoevaluación en curso. Si continuás, la evaluación pendiente será <strong>cancelada</strong> y el responsable será dado de baja.
+              El responsable tiene una autoevaluación en curso. Si continúa, la evaluación pendiente será <strong>cancelada</strong> y el responsable será dado de baja.
               <br /><br />
-              ¿Querés cancelar la evaluación pendiente y dar de baja a <strong>{formData.admin_first_name} {formData.admin_last_name}</strong>?
+              ¿Quiere cancelar la evaluación pendiente y dar de baja a <strong>{formData.admin_first_name} {formData.admin_last_name}</strong>?
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>

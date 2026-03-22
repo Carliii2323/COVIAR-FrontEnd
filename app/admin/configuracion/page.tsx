@@ -103,7 +103,7 @@ export default function ConfiguracionPage() {
     try {
       const usuarioStr = localStorage.getItem("usuario")
       if (!usuarioStr) {
-        setError("No se encontró información de sesión. Por favor, inicia sesión nuevamente.")
+        setError("No se encontró información de sesión. Por favor, inicie sesión nuevamente.")
         setIsLoading(false)
         return
       }
@@ -209,7 +209,7 @@ export default function ConfiguracionPage() {
       }
 
       await solicitarRestablecimientoPassword(email)
-      setSuccessMessage("Se ha enviado un correo con instrucciones para cambiar tu contraseña")
+      setSuccessMessage("Se ha enviado un correo con instrucciones para cambiar su contraseña")
     } catch (err) {
       logger.error("Error solicitando cambio de contraseña:", err)
       setError(err instanceof Error ? err.message : "Error al solicitar cambio de contraseña")
@@ -234,7 +234,7 @@ export default function ConfiguracionPage() {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold">Configuración</h1>
-          <p className="text-muted-foreground">Administra tu cuenta y preferencias</p>
+          <p className="text-muted-foreground">Administración de su cuenta y preferencias</p>
         </div>
         {!isEditing ? (
           <Button onClick={() => setIsEditing(true)}>
@@ -341,8 +341,8 @@ export default function ConfiguracionPage() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle>Visualización</CardTitle>
-              <CardDescription>Ajusta el tamaño del texto según tu pantalla y preferencias</CardDescription>
+              <CardTitle>Accesibilidad</CardTitle>
+              <CardDescription>Ajuste del tamaño de texto según su pantalla y preferencias</CardDescription>
             </div>
             <Button variant="outline" size="sm" onClick={detectAutoSize} className="shrink-0 gap-2">
               <Monitor className="h-4 w-4" />
@@ -374,7 +374,7 @@ export default function ConfiguracionPage() {
           </div>
           <p className="text-xs text-muted-foreground">
             El tamaño seleccionado se guarda automáticamente y se aplica en toda la plataforma.
-            Usá <strong>Detectar automáticamente</strong> para un valor recomendado según tu resolución de pantalla.
+            Utilizar <strong>Detectar automáticamente</strong> para un valor recomendado según su resolución de pantalla.
           </p>
         </CardContent>
       </Card>
@@ -382,7 +382,7 @@ export default function ConfiguracionPage() {
       <Card>
         <CardHeader>
           <CardTitle>Seguridad</CardTitle>
-          <CardDescription>Gestiona la seguridad de tu cuenta</CardDescription>
+          <CardDescription>Gestión de la seguridad de su cuenta</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-start justify-between p-4 border rounded-lg">
@@ -392,7 +392,7 @@ export default function ConfiguracionPage() {
                 <h3 className="font-semibold">Contraseña</h3>
               </div>
               <p className="text-sm text-muted-foreground">
-                Solicita un cambio de contraseña. Recibirás un correo electrónico con instrucciones para establecer una nueva contraseña.
+                Solicitud de cambio de contraseña. Se recibirá un correo electrónico con instrucciones para establecer una nueva contraseña.
               </p>
             </div>
             <Button
