@@ -59,7 +59,7 @@ export async function POST(
         }
 
         if (!response.ok) {
-            logger.error('❌ Proxy evidencias: Error', response.status)
+            logger.error('Proxy evidencias: Error', response.status)
             logger.error('   Backend URL:', backendUrl)
             logger.error('   File size:', rawBody.byteLength, 'bytes')
             logger.error('   Response data:', JSON.stringify(data))
@@ -70,7 +70,7 @@ export async function POST(
             
             if (response.status === 500) {
                 errorMessage = data.message || 'error interno del servidor'
-                logger.error('   ⚠️  Error 500 del backend - revisar logs del servidor')
+                logger.error('   Error 500 del backend - revisar logs del servidor')
             }
             
             return NextResponse.json(
@@ -117,7 +117,7 @@ export async function GET(
         }
 
         const backendUrl = `${API_BASE_URL}/api/autoevaluaciones/${id}/respuestas/${idRespuesta}/evidencias`
-        logger.log(`📋 Proxy evidencias: GET ${backendUrl}`)
+        logger.log(`Proxy evidencias: GET ${backendUrl}`)
 
         const response = await fetch(backendUrl, {
             method: 'GET',
@@ -128,17 +128,17 @@ export async function GET(
         const data = await response.json().catch(() => ({}))
 
         if (!response.ok) {
-            logger.error(`❌ Proxy evidencias: GET Error ${response.status}`, data)
+            logger.error(`Proxy evidencias: GET Error ${response.status}`, data)
             return NextResponse.json(
                 { message: data.message || `Error ${response.status}: ${response.statusText}` },
                 { status: response.status }
             )
         }
 
-        logger.log(`✅ Proxy evidencias: GET exitoso para respuesta ${idRespuesta}`, JSON.stringify(data))
+        logger.log(`Proxy evidencias: GET exitoso para respuesta ${idRespuesta}`, JSON.stringify(data))
         return NextResponse.json(data)
     } catch (error) {
-        logger.error('❌ Proxy: Error de conexión al obtener evidencias:', error)
+        logger.error('Proxy: Error de conexión al obtener evidencias:', error)
         return NextResponse.json(
             { message: 'No se pudo conectar con el servidor backend' },
             { status: 503 }

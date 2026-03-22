@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState, useRef, useEffect, useCallback } from "react"
+import { useState, useRef, useEffect, useCallback, Suspense } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -13,7 +13,7 @@ import { verificarCodigoEmail, reenviarCodigoEmail } from "@/lib/api/auth"
 const TIMER_SECONDS = 5 * 60
 const CODE_LENGTH = 6
 
-export default function VerificarCodigoPage() {
+function VerificarCodigoContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const email = searchParams.get("email") ?? ""
@@ -328,5 +328,13 @@ export default function VerificarCodigoPage() {
         .shake { animation: shake 0.4s ease; }
       `}</style>
     </div>
+  )
+}
+
+export default function VerificarCodigoPage() {
+  return (
+    <Suspense>
+      <VerificarCodigoContent />
+    </Suspense>
   )
 }

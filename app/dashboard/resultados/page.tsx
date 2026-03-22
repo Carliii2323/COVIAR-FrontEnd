@@ -825,11 +825,11 @@ export default function ResultadosPage() {
                 const resultadosDetallados = await obtenerResultadosAutoevaluacion(ultimaEvaluacion.id_autoevaluacion)
                 
                 // Debug: ver qué datos llegan del backend
-                logger.log('📊 Datos completos del backend:', resultadosDetallados)
+                logger.log('Datos completos del backend:', resultadosDetallados)
                 if (resultadosDetallados.capitulos && resultadosDetallados.capitulos[0]) {
-                    logger.log('📋 Ejemplo de capítulo:', resultadosDetallados.capitulos[0])
+                    logger.log('Ejemplo de capítulo:', resultadosDetallados.capitulos[0])
                     if (resultadosDetallados.capitulos[0].indicadores && resultadosDetallados.capitulos[0].indicadores[0]) {
-                        logger.log('📌 Ejemplo de indicador:', resultadosDetallados.capitulos[0].indicadores[0])
+                        logger.log('Ejemplo de indicador:', resultadosDetallados.capitulos[0].indicadores[0])
                     }
                 }
 
@@ -873,7 +873,7 @@ export default function ResultadosPage() {
                                     tiene_evidencia: ind.tiene_evidencia || false,
                                     nombre_archivo_evidencia: ind.nombre_archivo_evidencia
                                 }
-                                logger.log(`📝 Indicador mapeado "${ind.nombre}":`, indicadorFormateado)
+                                logger.log(`Indicador mapeado "${ind.nombre}":`, indicadorFormateado)
                                 return indicadorFormateado
                             }) || []
                         }

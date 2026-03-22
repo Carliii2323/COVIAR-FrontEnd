@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { ChevronRight, Check, Ban, AlertCircle, Users, Settings, CheckCircle2, Clock } from "lucide-react"
+import { ChevronRight, Check, Ban, AlertCircle, Users, Settings, CheckCircle2, Clock, Calendar, AlertTriangle, BarChart2, ClipboardList } from "lucide-react"
 import { useRouter } from "next/navigation"
 import {
   crearAutoevaluacion,
@@ -92,12 +92,12 @@ export default function AutoevaluacionPage() {
   // Función auxiliar para cargar evidencias existentes
   const cargarEvidenciasExistentes = async (autoId: string, respuestaIdMap: Record<number, number>) => {
     if (Object.keys(respuestaIdMap).length === 0) {
-      logger.log('⚠️ No hay respuestas con id_respuesta, no se pueden cargar evidencias')
+      logger.log('No hay respuestas con id_respuesta, no se pueden cargar evidencias')
       return
     }
 
-    logger.log('🔄 Cargando evidencias existentes...')
-    logger.log('📋 Mapa de respuestas:', respuestaIdMap)
+    logger.log('Cargando evidencias existentes...')
+    logger.log('Mapa de respuestas:', respuestaIdMap)
     const evidenciasMap: Record<number, string | null> = {}
     let cargadas = 0
     let errores = 0
@@ -105,32 +105,32 @@ export default function AutoevaluacionPage() {
     for (const [idIndicadorStr, idRespuesta] of Object.entries(respuestaIdMap)) {
       const idIndicador = parseInt(idIndicadorStr)
       try {
-        logger.log(`🔍 Buscando evidencia para indicador ${idIndicador}, respuesta ${idRespuesta}`)
+        logger.log(`Buscando evidencia para indicador ${idIndicador}, respuesta ${idRespuesta}`)
         const evidencia = await obtenerEvidencia(autoId, idRespuesta)
         
         if (evidencia?.nombre_archivo) {
           evidenciasMap[idIndicador] = evidencia.nombre_archivo
           cargadas++
-          logger.log(`📎 Evidencia cargada para indicador ${idIndicador}:`, evidencia.nombre_archivo)
+          logger.log(`Evidencia cargada para indicador ${idIndicador}:`, evidencia.nombre_archivo)
         } else if (evidencia) {
           // El objeto evidencia existe pero no tiene nombre_archivo
-          logger.warn(`⚠️ Evidencia existe pero sin nombre_archivo para indicador ${idIndicador}:`, evidencia)
+          logger.warn(`Evidencia existe pero sin nombre_archivo para indicador ${idIndicador}:`, evidencia)
         } else {
-          logger.log(`ℹ️ No hay evidencia para indicador ${idIndicador}`)
+          logger.log(`No hay evidencia para indicador ${idIndicador}`)
         }
       } catch (error) {
         errores++
-        logger.error(`❌ Error al cargar evidencia para indicador ${idIndicador}:`, error)
+        logger.error(`Error al cargar evidencia para indicador ${idIndicador}:`, error)
       }
     }
     
-    logger.log(`📊 Resumen: ${cargadas} evidencias cargadas, ${errores} errores`)
+    logger.log(`Resumen: ${cargadas} evidencias cargadas, ${errores} errores`)
     
     if (Object.keys(evidenciasMap).length > 0) {
       setEvidencias(evidenciasMap)
-      logger.log(`✅ Estado actualizado con ${Object.keys(evidenciasMap).length} evidencias`, evidenciasMap)
+      logger.log(`Estado actualizado con ${Object.keys(evidenciasMap).length} evidencias`, evidenciasMap)
     } else {
-      logger.log('ℹ️ No se encontraron evidencias para cargar')
+      logger.log('No se encontraron evidencias para cargar')
     }
   }
 
@@ -252,7 +252,7 @@ export default function AutoevaluacionPage() {
         setSelectedSegment(segmentoActual)
         logger.log('Segmento recuperado:', segmentoActual.nombre)
       } else {
-        logger.warn('⚠️ No se encontró el segmento con id:', pendingInfo.id_segmento)
+        logger.warn('No se encontró el segmento con id:', pendingInfo.id_segmento)
       }
       
       const estructuraResponse = await obtenerEstructuraAutoevaluacion(autoId)
@@ -291,12 +291,12 @@ export default function AutoevaluacionPage() {
           })
 
           if (savedResponses.length !== uniqueResponses.size) {
-            logger.warn(`⚠️ API devolvió ${savedResponses.length} respuestas pero solo ${uniqueResponses.size} son únicas`)
+            logger.warn(`API devolvió ${savedResponses.length} respuestas pero solo ${uniqueResponses.size} son únicas`)
           }
 
-          logger.log(`📊 Respuestas guardadas procesadas: ${savedResponses.length} respuestas, ${Object.keys(respuestaIdMap).length} con id_respuesta`)
+          logger.log(`Respuestas guardadas procesadas: ${savedResponses.length} respuestas, ${Object.keys(respuestaIdMap).length} con id_respuesta`)
           if (savedResponses.length > 0 && Object.keys(respuestaIdMap).length === 0) {
-            logger.warn('⚠️ Backend no devolvió id_respuesta. Intentando cargar desde evidencias...')
+            logger.warn('Backend no devolvió id_respuesta. Intentando cargar desde evidencias...')
           }
 
           // Buscar el nivel de puntos para cada respuesta guardada
@@ -322,7 +322,7 @@ export default function AutoevaluacionPage() {
           // WORKAROUND: Si el backend no devuelve id_respuesta, intentar obtenerlos desde las evidencias
           // Esto funciona porque las evidencias SÍ incluyen id_respuesta en su respuesta
           if (Object.keys(respuestaIdMap).length === 0) {
-            logger.log('🔍 Buscando id_respuesta desde evidencias existentes...')
+            logger.log('Buscando id_respuesta desde evidencias existentes...')
             const evidenciasMap: Record<number, string | null> = {}
             const respuestaIdMapFromEvidencias: Record<number, number> = {}
             
@@ -339,9 +339,9 @@ export default function AutoevaluacionPage() {
                   // CLAVE: Extraer id_respuesta de la respuesta de evidencia
                   if (evidencia.id_respuesta) {
                     respuestaIdMapFromEvidencias[idIndicador] = evidencia.id_respuesta
-                    logger.log(`✅ Evidencia encontrada para indicador ${idIndicador}: "${nombreArchivo}" (id_respuesta: ${evidencia.id_respuesta})`)
+                    logger.log(`Evidencia encontrada para indicador ${idIndicador}: "${nombreArchivo}" (id_respuesta: ${evidencia.id_respuesta})`)
                   } else {
-                    logger.log(`✅ Evidencia encontrada para indicador ${idIndicador}: "${nombreArchivo}" (sin id_respuesta)`)
+                    logger.log(`Evidencia encontrada para indicador ${idIndicador}: "${nombreArchivo}" (sin id_respuesta)`)
                   }
                 } else {
                   evidenciasMap[idIndicador] = null
@@ -356,13 +356,13 @@ export default function AutoevaluacionPage() {
             const evidenciasEncontradas = Object.keys(evidenciasMap).filter(k => evidenciasMap[parseInt(k)] !== null).length
             if (evidenciasEncontradas > 0) {
               setEvidencias(evidenciasMap)
-              logger.log(`📎 Cargadas ${evidenciasEncontradas} evidencias desde el servidor`)
+              logger.log(`Cargadas ${evidenciasEncontradas} evidencias desde el servidor`)
             }
             
             // Actualizar mapeo de id_respuesta si se encontraron
             if (Object.keys(respuestaIdMapFromEvidencias).length > 0) {
               setRespuestaIds(respuestaIdMapFromEvidencias)
-              logger.log(`🆔 Mapeo id_respuesta extraído desde evidencias:`, respuestaIdMapFromEvidencias)
+              logger.log(`Mapeo id_respuesta extraído desde evidencias:`, respuestaIdMapFromEvidencias)
             }
           } else {
             // El backend SÍ devolvió id_respuesta (caso ideal)
@@ -373,7 +373,7 @@ export default function AutoevaluacionPage() {
             await cargarEvidenciasExistentes(autoId, respuestaIdMap)
           }
           
-          logger.log(`✅ Cargadas ${Object.keys(apiResponsesMap).length} respuestas guardadas (únicas)`)
+          logger.log(`Cargadas ${Object.keys(apiResponsesMap).length} respuestas guardadas (únicas)`)
         }
 
         setIsSelectingSegment(false)
@@ -510,7 +510,7 @@ export default function AutoevaluacionPage() {
     // CASO 1: Si está cambiando a "Mínimo no alcanzado" (puntos = 0) y tiene evidencia, eliminarla
     // (No se puede tener evidencia si no se alcanza el mínimo)
     if (newLevel === 0 && idRespuestaAnterior && tieneEvidencia) {
-      logger.log(`🗑️ Eliminando evidencia al cambiar a "Mínimo no alcanzado" (indicador ${idIndicador})`)
+      logger.log(`Eliminando evidencia al cambiar a "Mínimo no alcanzado" (indicador ${idIndicador})`)
       try {
         await eliminarEvidencia(assessmentId, idRespuestaAnterior)
         // Limpiar el estado de evidencias para este indicador
@@ -519,15 +519,15 @@ export default function AutoevaluacionPage() {
           delete updated[idIndicador]
           return updated
         })
-        logger.log(`✅ Evidencia eliminada exitosamente`)
+        logger.log(`Evidencia eliminada exitosamente`)
       } catch (error) {
-        logger.error('❌ Error al eliminar evidencia:', error)
+        logger.error('Error al eliminar evidencia:', error)
         // Continuar con el cambio de respuesta aunque falle la eliminación
       }
     }
     // CASO 2: Si la respuesta está cambiando (es diferente) y hay evidencia asociada, eliminarla
     else if (respuestaAnterior !== undefined && respuestaAnterior !== newNivelId && idRespuestaAnterior && tieneEvidencia) {
-      logger.log(`🗑️ Eliminando evidencia anterior del indicador ${idIndicador} (respuesta ${idRespuestaAnterior})`)
+      logger.log(`Eliminando evidencia anterior del indicador ${idIndicador} (respuesta ${idRespuestaAnterior})`)
       try {
         await eliminarEvidencia(assessmentId, idRespuestaAnterior)
         // Limpiar el estado de evidencias para este indicador
@@ -536,9 +536,9 @@ export default function AutoevaluacionPage() {
           delete updated[idIndicador]
           return updated
         })
-        logger.log(`✅ Evidencia eliminada exitosamente`)
+        logger.log(`Evidencia eliminada exitosamente`)
       } catch (error) {
-        logger.error('❌ Error al eliminar evidencia anterior:', error)
+        logger.error('Error al eliminar evidencia anterior:', error)
         // Continuar con el cambio de respuesta aunque falle la eliminación
       }
     }
@@ -566,7 +566,7 @@ export default function AutoevaluacionPage() {
     const indicadoresIds = respuestasArray.map(r => r.id_indicador)
     const hasDuplicates = indicadoresIds.length !== new Set(indicadoresIds).size
     if (hasDuplicates) {
-      logger.error('⚠️ ERROR: Respuestas duplicadas detectadas:', indicadoresIds)
+      logger.error('ERROR: Respuestas duplicadas detectadas:', indicadoresIds)
       // No debería pasar nunca con un objeto, pero por seguridad
       return
     }
@@ -579,7 +579,7 @@ export default function AutoevaluacionPage() {
     setIsSaving(true)
     try {
       const respuestasGuardadas = await guardarRespuestas(assessmentId, respuestasArray)
-      logger.log(`✅ Guardadas ${respuestasArray.length} respuestas exitosamente`)
+      logger.log(`Guardadas ${respuestasArray.length} respuestas exitosamente`)
 
       // Capturar los id_respuesta devueltos por el backend
       let idsUpdated = false
@@ -596,7 +596,7 @@ export default function AutoevaluacionPage() {
 
       // Fallback: si guardarRespuestas no devolvió IDs, intentar POST individual para el indicador actual
       if (!idsUpdated) {
-        logger.log('⚠️ guardarRespuestas no devolvió id_respuesta, intentando POST individual...')
+        logger.log('guardarRespuestas no devolvió id_respuesta, intentando POST individual...')
         try {
           const result = await guardarRespuestaIndividual(
             assessmentId,
@@ -618,7 +618,7 @@ export default function AutoevaluacionPage() {
         logger.log('Mapeo id_indicador -> id_respuesta actualizado:', newRespuestaIds)
       }
     } catch (error) {
-      logger.error('❌ Error al guardar respuestas:', error)
+      logger.error('Error al guardar respuestas:', error)
     } finally {
       savingCount.current--
       if (savingCount.current === 0) {
@@ -835,7 +835,7 @@ export default function AutoevaluacionPage() {
       
       // Cargar evidencias si hay respuestas guardadas
       if (Object.keys(respuestaIds).length > 0) {
-        logger.log('🔄 Recargando evidencias después de cambiar segmento...')
+        logger.log('Recargando evidencias después de cambiar segmento...')
         await cargarEvidenciasExistentes(currentId, respuestaIds)
       }
       
@@ -1153,7 +1153,7 @@ export default function AutoevaluacionPage() {
                 {/* Fecha de inicio */}
                 <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border border-gray-100">
                   <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100">
-                    <span className="text-lg">📅</span>
+                    <Calendar className="h-5 w-5 text-blue-600" />
                   </div>
                   <div>
                     <p className="text-xs text-gray-500 font-medium uppercase tracking-wide">Fecha de inicio</p>
@@ -1182,8 +1182,12 @@ export default function AutoevaluacionPage() {
                       ? 'bg-blue-100'
                       : 'bg-green-100'
                     }`}>
-                    <span className="text-lg">
-                      {!pendingInfo.tieneSegmento ? '⚠️' : pendingInfo.cantidadRespuestas === 0 ? '📊' : '📝'}
+                    <span className="flex items-center justify-center">
+                      {!pendingInfo.tieneSegmento
+                        ? <AlertTriangle className="h-5 w-5 text-amber-600" />
+                        : pendingInfo.cantidadRespuestas === 0
+                          ? <BarChart2 className="h-5 w-5 text-blue-600" />
+                          : <ClipboardList className="h-5 w-5 text-green-600" />}
                     </span>
                   </div>
                   <div>
