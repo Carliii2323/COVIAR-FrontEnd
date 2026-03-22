@@ -199,3 +199,45 @@ export async function verificarToken(): Promise<boolean> {
     return false
   }
 }
+
+/**
+ * Verifica el código de 6 dígitos enviado al correo del usuario
+ * POST /api/auth/verificar-correo -> proxy -> backend /api/verificar-correo
+ */
+export async function verificarCodigoEmail(email: string, codigo: string): Promise<void> {
+  const response = await fetch('/api/auth/verificar-correo', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, codigo }),
+  })
+
+  const result = await response.json()
+
+  if (!response.ok) {
+    throw new Error(result.message || `Error ${response.status}: ${response.statusText}`)
+  }
+}
+
+/**
+ * Solicita el reenvío del código de verificación al correo del usuario.
+ * Retorna los segundos que el usuario debe esperar antes del próximo reenvío,
+ * para que el frontend ajuste su temporizador dinámicamente.
+ *
+ * POST /api/auth/reenviar-codigo-verificacion -> proxy -> backend /api/reenviar-codigo-verificacion
+ */
+export async function reenviarCodigoEmail(email: string): Promise<number> {
+  const response = await fetch('/api/auth/reenviar-codigo-verificacion', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email }),
+  })
+
+  const result = await response.json()
+
+  if (!response.ok) {
+    throw new Error(result.message || `Error ${response.status}: ${response.statusText}`)
+  }
+
+  // El backend retorna segundos_espera para el próximo reenvío
+  return result.segundos_espera ?? 60
+}

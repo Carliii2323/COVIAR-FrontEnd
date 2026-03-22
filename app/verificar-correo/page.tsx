@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import Link from "next/link"
 import Image from "next/image"
 import { ArrowLeft } from "lucide-react"
+import { verificarCodigoEmail, reenviarCodigoEmail } from "@/lib/api/auth"
 
 const TIMER_SECONDS = 5 * 60
 const CODE_LENGTH = 6
@@ -24,15 +25,19 @@ export default function VerificarCodigoPage() {
   const [canResend, setCanResend] = useState<boolean>(false)
   const [resending, setResending] = useState(false)
 
-  // Sincronizar timer con sessionStorage solo en el cliente, tras el montaje
+  // Sincronizar timer con sessionStorage solo en el cliente, tras el montaje.
+  // verif_timer_duration se actualiza en cada reenvío con la espera progresiva
+  // que devuelve el backend, por lo que el timer es dinámico.
   useEffect(() => {
     const savedStart = sessionStorage.getItem("verif_timer_start")
+    const savedDuration = Number(sessionStorage.getItem("verif_timer_duration") ?? TIMER_SECONDS)
     if (!savedStart) {
       sessionStorage.setItem("verif_timer_start", Date.now().toString())
+      sessionStorage.setItem("verif_timer_duration", String(TIMER_SECONDS))
       return
     }
     const elapsed = Math.floor((Date.now() - Number(savedStart)) / 1000)
-    const remaining = TIMER_SECONDS - elapsed
+    const remaining = savedDuration - elapsed
     if (remaining <= 0) {
       setTimeLeft(0)
       setCanResend(true)
@@ -133,10 +138,10 @@ export default function VerificarCodigoPage() {
       setError(null)
 
       try {
-        // TODO: conectar con la función real, ej:
-        // await verificarCodigoEmail(email, finalCode)
+        await verificarCodigoEmail(email, finalCode)
         sessionStorage.removeItem("verif_timer_start")
-        router.push("/dashboard")
+        sessionStorage.removeItem("verif_timer_duration")
+        router.push("/registro-exitoso")
       } catch {
         setError("El código ingresado es inválido o ha expirado. Por favor, verifique e intente nuevamente.")
         setCode(Array(CODE_LENGTH).fill(""))
@@ -152,14 +157,16 @@ export default function VerificarCodigoPage() {
     setResending(true)
     setError(null)
     try {
-      // TODO: await reenviarCodigoEmail(email)
+      // El backend retorna los segundos de espera antes del próximo reenvío
+      const segundosEspera = await reenviarCodigoEmail(email)
       sessionStorage.setItem("verif_timer_start", Date.now().toString())
-      setTimeLeft(TIMER_SECONDS)
+      sessionStorage.setItem("verif_timer_duration", String(segundosEspera))
+      setTimeLeft(segundosEspera)
       setCanResend(false)
       setCode(Array(CODE_LENGTH).fill(""))
       setTimeout(() => inputRefs.current[0]?.focus(), 50)
-    } catch {
-      setError("No se pudo reenviar el código. Intente nuevamente.")
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "No se pudo reenviar el código. Intente nuevamente.")
     } finally {
       setResending(false)
     }
