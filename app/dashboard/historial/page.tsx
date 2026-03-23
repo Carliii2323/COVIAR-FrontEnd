@@ -227,8 +227,8 @@ export default function HistorialPage() {
             className="gap-2 bg-[#81242d] text-white hover:bg-[#6a0a17] shadow-sm"
           >
             <FileText className="h-4 w-4" />
-            <span>PDF</span>
-            <span className="hidden sm:inline"> completo</span>
+            <span className="sm:hidden">PDF</span>
+            <span className="hidden sm:inline">Descargar Todo PDF</span>
           </Button>
         </div>
       </div>
