@@ -206,7 +206,7 @@ function ComparativaChart({
     const yMax = Math.ceil(maxPuntaje * 1.1 / 10) * 10
 
     return (
-        <Card className="bg-white border border-gray-200 shadow-sm">
+        <Card className="hidden sm:block bg-white border border-gray-200 shadow-sm">
             <CardHeader className="pb-2">
                 <div className="flex items-start justify-between gap-4">
                     <div>
@@ -460,8 +460,8 @@ function LocalChapterCard({ capitulo, idAutoevaluacion }: { capitulo: CapituloLo
                             className={hasIndicadores ? "cursor-pointer select-none hover:bg-muted/30 transition-colors" : ""}
                             onClick={() => hasIndicadores && setIsExpanded(!isExpanded)}
                         >
-                            <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
+                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                    <div className="flex items-start gap-3">
                         <div
                             className="p-2 rounded-lg"
                             style={{ backgroundColor: `${color}15` }}
@@ -477,7 +477,7 @@ function LocalChapterCard({ capitulo, idAutoevaluacion }: { capitulo: CapituloLo
                             </p>
                         </div>
                     </div>
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-4 self-start sm:self-auto">
                         <Badge
                             variant="secondary"
                             className="text-base font-bold px-3 py-1 whitespace-nowrap"

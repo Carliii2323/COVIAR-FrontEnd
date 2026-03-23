@@ -364,7 +364,7 @@ export default function GestionAutoevaluacionPage() {
               {totalPages > 1 && (
                 <div className="flex items-center justify-between mt-4 pt-4 border-t">
                   <div className="text-sm text-muted-foreground">
-                    Página {currentPage} de {totalPages}
+                    <span className="hidden sm:inline">Página {currentPage} de {totalPages} </span> 
                   </div>
                   <div className="flex items-center gap-2">
                     <Button
@@ -374,7 +374,7 @@ export default function GestionAutoevaluacionPage() {
                       disabled={currentPage === 1}
                     >
                       <ChevronLeft className="h-4 w-4 mr-1" />
-                      Anterior
+                      <span className="hidden sm:inline">Anterior</span>
                     </Button>
 
                     {/* Números de página */}
@@ -411,7 +411,7 @@ export default function GestionAutoevaluacionPage() {
                       onClick={() => handlePageChange(currentPage + 1)}
                       disabled={currentPage === totalPages}
                     >
-                      Siguiente
+                      <span className="hidden sm:inline">Siguiente</span>
                       <ChevronRight className="h-4 w-4 ml-1" />
                     </Button>
                   </div>
