@@ -202,7 +202,7 @@ export default function GestionAutoevaluacionPage() {
         </div>
         <Button onClick={exportToCSV} disabled={filteredEvaluaciones.length === 0}>
           <Download className="h-4 w-4 mr-2" />
-          Exportar CSV
+          <span className="hidden sm:inline">Exportar CSV</span>
         </Button>
       </div>
 
