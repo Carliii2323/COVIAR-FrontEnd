@@ -4,15 +4,15 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Logos / Respaldos */}
-        <div className="border-b border-gray-700 pb-12 mb-12 text-center">
+        <div className="pb-12 mb-12 text-center">
             <p className="text-gray-400 uppercase tracking-widest text-xs mb-8">Con el respaldo técnico e institucional de</p>
             <div className="flex flex-wrap justify-center items-center">
-                {/* Logo COVIAR */}
+                {/* Logos UNCUYO y MRS */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img 
                   src="/assets/footer/FooterBlanco.svg" 
-                  alt="COVIAR" 
-                  className="w-[65%] h-auto opacity-90 hover:opacity-100 transition-opacity"
+                  alt="UNCUYO y MRS" 
+                  className="h-auto max-w-md opacity-90 hover:opacity-100 transition-opacity scale-[1.15]"
                 />
             </div>
         </div>
