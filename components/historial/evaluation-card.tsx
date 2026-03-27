@@ -258,7 +258,8 @@ export function EvaluationCard({
                         ) : (
                             <>
                                 <ChevronDown className="h-4 w-4" />
-                                Ver detalles por capítulo
+                                
+                                <span className="hidden sm:inline">Ver detalles por capítulo</span>
                             </>
                         )}
                     </Button>

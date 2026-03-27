@@ -231,10 +231,7 @@ export default function AdminDashboard() {
       ) : distribucionPorSegmento.length === 0 ? (
         <p className="text-sm text-muted-foreground text-center py-8">No hay datos de segmentación disponibles</p>
       ) : (
-        <div
-          className="grid gap-4"
-          style={{ gridTemplateColumns: `repeat(${Math.min(distribucionPorSegmento.length, 5)}, minmax(0, 1fr))` }}
-        >
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
           {distribucionPorSegmento.map((seg) => {
             const barData = [
               { nivel: "Alto",  name: "Nivel alto de sostenibilidad",  value: seg.alto,   fill: COLORS.alto   },

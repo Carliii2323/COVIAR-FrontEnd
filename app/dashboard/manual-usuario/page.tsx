@@ -25,7 +25,8 @@ export default function ManualDeUso() {
             <div className="absolute inset-0 bg-gradient-to-r from-[#880D1E]/30 to-[#a81028]/30 rounded-lg blur opacity-40 group-hover:opacity-60 transition duration-300"></div>
             <div className="relative bg-gradient-to-br from-[#880D1E] to-[#6a0a17] px-6 py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 flex items-center gap-3">
               <Download className="w-5 h-5 text-white" />
-              <span className="text-white font-semibold whitespace-nowrap">Descargar instructivo</span>
+              <span className="text-white font-semibold whitespace-nowrap hidden sm:inline">Descargar instructivo</span>
+              
             </div>
           </a>
         </div>

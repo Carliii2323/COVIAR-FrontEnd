@@ -206,7 +206,7 @@ function ComparativaChart({
     const yMax = Math.ceil(maxPuntaje * 1.1 / 10) * 10
 
     return (
-        <Card className="bg-white border border-gray-200 shadow-sm">
+        <Card className="hidden sm:block bg-white border border-gray-200 shadow-sm">
             <CardHeader className="pb-2">
                 <div className="flex items-start justify-between gap-4">
                     <div>
@@ -460,8 +460,8 @@ function LocalChapterCard({ capitulo, idAutoevaluacion }: { capitulo: CapituloLo
                             className={hasIndicadores ? "cursor-pointer select-none hover:bg-muted/30 transition-colors" : ""}
                             onClick={() => hasIndicadores && setIsExpanded(!isExpanded)}
                         >
-                            <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
+                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                    <div className="flex items-start gap-3">
                         <div
                             className="p-2 rounded-lg"
                             style={{ backgroundColor: `${color}15` }}
@@ -477,7 +477,7 @@ function LocalChapterCard({ capitulo, idAutoevaluacion }: { capitulo: CapituloLo
                             </p>
                         </div>
                     </div>
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-4 self-start sm:self-auto">
                         <Badge
                             variant="secondary"
                             className="text-base font-bold px-3 py-1 whitespace-nowrap"
@@ -825,11 +825,11 @@ export default function ResultadosPage() {
                 const resultadosDetallados = await obtenerResultadosAutoevaluacion(ultimaEvaluacion.id_autoevaluacion)
                 
                 // Debug: ver qué datos llegan del backend
-                logger.log('📊 Datos completos del backend:', resultadosDetallados)
+                logger.log('Datos completos del backend:', resultadosDetallados)
                 if (resultadosDetallados.capitulos && resultadosDetallados.capitulos[0]) {
-                    logger.log('📋 Ejemplo de capítulo:', resultadosDetallados.capitulos[0])
+                    logger.log('Ejemplo de capítulo:', resultadosDetallados.capitulos[0])
                     if (resultadosDetallados.capitulos[0].indicadores && resultadosDetallados.capitulos[0].indicadores[0]) {
-                        logger.log('📌 Ejemplo de indicador:', resultadosDetallados.capitulos[0].indicadores[0])
+                        logger.log('Ejemplo de indicador:', resultadosDetallados.capitulos[0].indicadores[0])
                     }
                 }
 
@@ -873,7 +873,7 @@ export default function ResultadosPage() {
                                     tiene_evidencia: ind.tiene_evidencia || false,
                                     nombre_archivo_evidencia: ind.nombre_archivo_evidencia
                                 }
-                                logger.log(`📝 Indicador mapeado "${ind.nombre}":`, indicadorFormateado)
+                                logger.log(`Indicador mapeado "${ind.nombre}":`, indicadorFormateado)
                                 return indicadorFormateado
                             }) || []
                         }

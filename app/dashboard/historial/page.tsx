@@ -217,17 +217,18 @@ export default function HistorialPage() {
         <div className="flex gap-3">
           <Button
             onClick={handleExportAllCSV}
-            className="gap-2 bg-[#81242d] text-white hover:bg-[#6a0a17] shadow-sm"
+            className="hidden sm:flex gap-2 bg-[#81242d] text-white hover:bg-[#6a0a17] shadow-sm"
           >
             <FileSpreadsheet className="h-4 w-4" />
-            Descargar Todo CSV
+            <span className="hidden sm:inline">Descargar Todo CSV</span>
           </Button>
           <Button
             onClick={handleExportAllPDF}
             className="gap-2 bg-[#81242d] text-white hover:bg-[#6a0a17] shadow-sm"
           >
             <FileText className="h-4 w-4" />
-            Descargar Todo PDF
+            <span className="sm:hidden">PDF</span>
+            <span className="hidden sm:inline">Descargar Todo PDF</span>
           </Button>
         </div>
       </div>
