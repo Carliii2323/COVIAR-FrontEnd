@@ -241,7 +241,7 @@ export default function ConfiguracionPage() {
             Editar Información
           </Button>
         ) : (
-          <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-2">
             <Button variant="outline" onClick={handleCancel} disabled={isSaving}>
               Cancelar
             </Button>
@@ -337,7 +337,7 @@ export default function ConfiguracionPage() {
       </Card>
 
       {/* Card de Visualización */}
-      <Card>
+      <Card className="hidden sm:block">
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
@@ -385,7 +385,7 @@ export default function ConfiguracionPage() {
           <CardDescription>Gestión de la seguridad de su cuenta</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex items-start justify-between p-4 border rounded-lg">
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between p-4 border rounded-lg gap-4">
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-2">
                 <Key className="h-5 w-5 text-primary" />
@@ -399,7 +399,7 @@ export default function ConfiguracionPage() {
               variant="outline"
               onClick={handleCambiarContrasena}
               disabled={isSendingPasswordReset || isEditing}
-              className="ml-4 shrink-0"
+              className="sm:ml-4 shrink-0 w-full sm:w-auto"
             >
               {isSendingPasswordReset ? (
                 <>

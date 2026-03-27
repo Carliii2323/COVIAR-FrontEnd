@@ -87,7 +87,7 @@ export async function GET(
         }
 
         const backendUrl = `${API_BASE_URL}/api/autoevaluaciones/${id}/respuestas/${idRespuesta}/evidencia`
-        logger.log(`📋 Proxy evidencia: GET ${backendUrl}`)
+        logger.log(`Proxy evidencia: GET ${backendUrl}`)
 
         const response = await fetch(backendUrl, {
             method: 'GET',
@@ -98,17 +98,17 @@ export async function GET(
         const data = await response.json().catch(() => ({}))
 
         if (!response.ok) {
-            logger.error(`❌ Proxy evidencia: GET Error ${response.status}`, data)
+            logger.error(`Proxy evidencia: GET Error ${response.status}`, data)
             return NextResponse.json(
                 { message: data.message || `Error ${response.status}: ${response.statusText}` },
                 { status: response.status }
             )
         }
 
-        logger.log(`✅ Proxy evidencia: GET exitoso para respuesta ${idRespuesta}`, JSON.stringify(data))
+        logger.log(`Proxy evidencia: GET exitoso para respuesta ${idRespuesta}`, JSON.stringify(data))
         return NextResponse.json(data)
     } catch (error) {
-        logger.error('❌ Proxy: Error de conexión al obtener evidencia:', error)
+        logger.error('Proxy: Error de conexión al obtener evidencia:', error)
         return NextResponse.json(
             { message: 'No se pudo conectar con el servidor backend' },
             { status: 503 }

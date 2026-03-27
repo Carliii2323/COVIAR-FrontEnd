@@ -224,7 +224,7 @@ export interface IndicadorConRespuesta {
 }
 
 // Capítulo con indicadores y respuestas para resultados detallados
-export interface ResultadoCapituloConIndicadores extends ResultadoCapitulo {
+export interface ResultadoCapituloConIndicadores extends Omit<ResultadoCapitulo, 'indicadores'> {
   indicadores: IndicadorConRespuesta[]
 }
 

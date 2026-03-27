@@ -114,13 +114,13 @@ export function EvidenciaUpload({
     // Sincronizar archivo existente con estado local
     useEffect(() => {
         if (archivoExistente) {
-            logger.log(`📁 Inicializando archivo existente para indicador ${idIndicador}:`, archivoExistente)
+            logger.log(`Inicializando archivo existente para indicador ${idIndicador}:`, archivoExistente)
             setNombreArchivo(archivoExistente)
             setStatus("has-file")
             setErrorMessage(null) // Limpiar cualquier error previo
         } else if (archivoExistente === null && nombreArchivo !== null) {
             // Si archivoExistente cambió a null, resetear el componente
-            logger.log(`🗑️ Reseteando evidencia para indicador ${idIndicador}`)
+            logger.log(`Reseteando evidencia para indicador ${idIndicador}`)
             setNombreArchivo(null)
             setStatus("idle")
             setErrorMessage(null)
@@ -216,14 +216,14 @@ export function EvidenciaUpload({
 
         // Subir archivo
         try {
-            logger.log(`📤 Subiendo evidencia para indicador ${idIndicador}, respuesta ${effectiveIdRespuesta}`)
+            logger.log(`Subiendo evidencia para indicador ${idIndicador}, respuesta ${effectiveIdRespuesta}`)
             const response = await subirEvidencia(idAutoevaluacion, effectiveIdRespuesta, pendingFile)
             stopProgressBar(100)
             
             // El backend puede devolver 'nombre_archivo' o 'nombre'
             const nombreArchivoSubido = response.evidencia?.nombre_archivo || response.evidencia?.nombre || pendingFile.name
-            logger.log(`✅ Evidencia subida exitosamente:`, nombreArchivoSubido)
-            logger.log(`📋 Respuesta del backend:`, response)
+            logger.log(`Evidencia subida exitosamente:`, nombreArchivoSubido)
+            logger.log(`Respuesta del backend:`, response)
             
             setNombreArchivo(nombreArchivoSubido)
             setStatus("success")
@@ -235,7 +235,7 @@ export function EvidenciaUpload({
                 setStatus("has-file")
             }, 2500)
         } catch (error) {
-            logger.error(`❌ Error al subir evidencia para indicador ${idIndicador}:`, error)
+            logger.error(`Error al subir evidencia para indicador ${idIndicador}:`, error)
             stopProgressBar(0)
             setStatus("error")
             

@@ -369,7 +369,7 @@ export async function obtenerEvidencia(
     idRespuesta: number
 ): Promise<Evidencia | null> {
     const url = `/api/autoevaluaciones/${idAutoevaluacion}/respuestas/${idRespuesta}/evidencia`
-    logger.log(`📋 obtenerEvidencia: GET ${url}`)
+    logger.log(`obtenerEvidencia: GET ${url}`)
 
     const response = await fetch(url, {
         method: 'GET',
@@ -381,14 +381,14 @@ export async function obtenerEvidencia(
 
     if (!response.ok) {
         if (response.status === 404) {
-            logger.log(`ℹ️ No hay evidencia para respuesta ${idRespuesta} (404)`)
+            logger.log(`No hay evidencia para respuesta ${idRespuesta} (404)`)
             return null
         }
-        logger.error(`❌ obtenerEvidencia: Error ${response.status}`, data)
+        logger.error(`obtenerEvidencia: Error ${response.status}`, data)
         throw new Error(data?.message || `Error ${response.status}: ${response.statusText}`)
     }
 
-    logger.log(`📦 obtenerEvidencia: Respuesta recibida`, JSON.stringify(data))
+    logger.log(`obtenerEvidencia: Respuesta recibida`, JSON.stringify(data))
 
     // La API puede devolver un objeto con evidencia en data.evidencia
     if (data.evidencia) {
@@ -397,7 +397,7 @@ export async function obtenerEvidencia(
         if (evidencia.nombre && !evidencia.nombre_archivo) {
             evidencia.nombre_archivo = evidencia.nombre
         }
-        logger.log(`✅ Evidencia encontrada en data.evidencia:`, evidencia.nombre_archivo || evidencia.nombre)
+        logger.log(`Evidencia encontrada en data.evidencia:`, evidencia.nombre_archivo || evidencia.nombre)
         return evidencia as Evidencia
     }
     if (data.nombre_archivo || data.nombre) {
@@ -405,12 +405,12 @@ export async function obtenerEvidencia(
         if (data.nombre && !data.nombre_archivo) {
             data.nombre_archivo = data.nombre
         }
-        logger.log(`✅ Evidencia encontrada directamente en data:`, data.nombre_archivo)
+        logger.log(`Evidencia encontrada directamente en data:`, data.nombre_archivo)
         return data as Evidencia
     }
 
-    logger.warn(`⚠️ obtenerEvidencia: Estructura de respuesta no reconocida. Keys:`, Object.keys(data))
-    logger.warn(`⚠️ Datos completos:`, JSON.stringify(data))
+    logger.warn(`obtenerEvidencia: Estructura de respuesta no reconocida. Keys:`, Object.keys(data))
+    logger.warn(`Datos completos:`, JSON.stringify(data))
     return null
 }
 
@@ -425,7 +425,7 @@ export async function obtenerEvidenciaPorIndicador(
     idIndicador: number
 ): Promise<Evidencia | null> {
     const url = `/api/autoevaluaciones/${idAutoevaluacion}/evidencias?id_indicador=${idIndicador}`
-    logger.log(`📋 obtenerEvidenciaPorIndicador: GET ${url}`)
+    logger.log(`obtenerEvidenciaPorIndicador: GET ${url}`)
 
     const response = await fetch(url, {
         method: 'GET',
@@ -437,14 +437,14 @@ export async function obtenerEvidenciaPorIndicador(
 
     if (!response.ok) {
         if (response.status === 404) {
-            logger.log(`ℹ️ No hay evidencia para indicador ${idIndicador} (404)`)
+            logger.log(`No hay evidencia para indicador ${idIndicador} (404)`)
             return null
         }
-        logger.error(`❌ obtenerEvidenciaPorIndicador: Error ${response.status}`, data)
+        logger.error(`obtenerEvidenciaPorIndicador: Error ${response.status}`, data)
         throw new Error(data?.message || `Error ${response.status}: ${response.statusText}`)
     }
 
-    logger.log(`📦 obtenerEvidenciaPorIndicador: Respuesta recibida`, JSON.stringify(data))
+    logger.log(`obtenerEvidenciaPorIndicador: Respuesta recibida`, JSON.stringify(data))
 
     // Procesar la respuesta similar a obtenerEvidencia
     if (data.evidencia) {
@@ -452,22 +452,22 @@ export async function obtenerEvidenciaPorIndicador(
         if (evidencia.nombre && !evidencia.nombre_archivo) {
             evidencia.nombre_archivo = evidencia.nombre
         }
-        logger.log(`✅ Evidencia encontrada (id_respuesta: ${evidencia.id_respuesta}):`, evidencia.nombre_archivo || evidencia.nombre)
+        logger.log(`Evidencia encontrada (id_respuesta: ${evidencia.id_respuesta}):`, evidencia.nombre_archivo || evidencia.nombre)
         return evidencia as Evidencia
     }
     if (Array.isArray(data.evidencias) && data.evidencias.length > 0) {
-        logger.warn(`⚠️ API retornó un array de evidencias general al solicitar por indicador ${idIndicador}. Bloqueado para evitar clonación visual.`)
+        logger.warn(`API retornó un array de evidencias general al solicitar por indicador ${idIndicador}. Bloqueado para evitar clonación visual.`)
         return null
     }
     if (data.nombre_archivo || data.nombre) {
         if (data.nombre && !data.nombre_archivo) {
             data.nombre_archivo = data.nombre
         }
-        logger.log(`✅ Evidencia encontrada (id_respuesta: ${data.id_respuesta}):`, data.nombre_archivo)
+        logger.log(`Evidencia encontrada (id_respuesta: ${data.id_respuesta}):`, data.nombre_archivo)
         return data as Evidencia
     }
 
-    logger.log(`ℹ️ No se encontró evidencia para indicador ${idIndicador}`)
+    logger.log(`No se encontró evidencia para indicador ${idIndicador}`)
     return null
 }
 
